@@ -1,0 +1,2 @@
+This file is used by the "build dev environment" and "build install key"
+scripts to confirm where the development environment's root directory is.

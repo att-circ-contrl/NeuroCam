@@ -1,0 +1,16 @@
+Logitech C270:
+
+- Can do 1280x720 at 30 fps.
+- Has a 4:3 sensor, so 1280x960 is max.
+- Use exposure_auto=1 (out of 0-3) and exposure_absolute=150 (0-10k).
+
+
+Logitech C920:
+
+- Can do 1920x1080 at 20 fps or 1280x720 at 30 fps.
+- Has a 16:9 sensor, I think. mostly 16:9 video modes.
+- Use exposure_auto=1 (out of 0-3).
+- For 720p 30 fps, use exposure_absolute=700 (out of 3-2047).
+- For 1080p 20 fps, use exposure_absolute=50 (very dark).
+- For 1080p 15 fps, use exposure_absolute=700 (okay).
+- Can do 30 fps at 1080p, but only with a near-black frame.

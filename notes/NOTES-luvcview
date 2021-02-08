@@ -1,0 +1,14 @@
+Invocation:
+luvcview -d /dev/video0 -f MJPG -s 1280x720 -i 30
+
+Clicking "auto-exposure off" fails, but "auto-exposure on" turns it off.
+This is a known UI bug.
+
+mplayer will reset auto-exposure on _exit_, or when _resizing_.
+So, using luvcview to tweak it only works for the first call, and needs
+the same size setting.
+
+Even at low exposure, 1920 tops out at 20 fps.
+
+Not sure if lighting will fix, or if it's bandwidth-related.
+Update: lighting does not have any effect on auto-exposure's selection?

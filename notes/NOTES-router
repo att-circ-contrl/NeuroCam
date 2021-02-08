@@ -1,0 +1,15 @@
+Notes for the Asus RT-N66U router:
+
+- router config page is at 192.168.1.1
+- setting admin account to login "admin" pw "administrator"
+- setting SSIDs to "NeuroCam-2.4GHz" and "NeuroCam-5GHz", pw "neurocam"
+(names must differ for MAC filtering to work properly across both)
+- disabled WPS
+- forced "accept" type MAC filtering on wifi
+- dhcp pool is from .64 to .254
+- lease is left at 86400
+- manually assigned cubi to 192.168.1.2
+- the router is supposed to handle LAN dns by default if in dhcp mode; 
+host entries can be manually added by writing to the jffs flash device
+- disable UPnP in WAN settings (it exposes internals to the world)
+- WAN is dhcp by default; change this if necessary

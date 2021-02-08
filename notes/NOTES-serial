@@ -1,0 +1,10 @@
+"cu -l (port) -s (speed)" talks to Arduinos over ttyACM* but not ttyUSB*.
+
+The ACM versions are using ATmega32U4 chips and the USB versions use FTDI.
+
+"picocom --baud (speed) (port)" works with FTDI, but not with Perl.
+
+"stty -F (port) --all > foo.txt" shows differences as:
+
+     cu:  -clocal crtscts ixon
+picocom:  clocal -crtscts -ixon

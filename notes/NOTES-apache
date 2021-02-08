@@ -1,0 +1,28 @@
+Quick and dirty Apache setup under Mint (as root):
+
+"apt-get install apache2"
+(see "linux-apache-mint.pdf" for the whole LAMP framework)
+
+Modules are enabled by creating a symlink in /etc/apache2/mods-enabled 
+(pointing to the relevant config file in /etc/apache2/mods-available).
+This can be done via "a2enmod"/"a2dismod" and related commands.
+
+After changing the configuration, use "/etc/init.d/apache2 restart".
+
+To give users their own web directories:
+- Make sure userdir.conf is enabled.
+
+To enable CGI in user directories (per "linux-apache-cgi.pdf"):
+- Make sure cgid.conf is enabled. (Enabling "cgi" picks it automatically.)
+- Make sure userdir.conf is enabled, per above.
+- Make sure mime.conf is enabled (it normally is).
+- Uncomment "AddHandler cgi-script .cgi" (optionally ".cgi .pl") in mime.
+- Add "Options +ExecCGI" after the "Options" line for public_html.
+
+To run from a centralized web repository:
+- Add users that can tweak the repository to the "www-data" group.
+- The default configuration is in "sites-enabled/000-default.conf".
+- This serves /var/www/html/ by default.
+- The configuration "conf-enabled/serve-cgi-bin.conf" serves CGI from 
+/usr/lib/cgi-bin/ (fetched as /cgi-bin/). Rename the Directory target to 
+/var/www/html to serve CGI from the web directory.

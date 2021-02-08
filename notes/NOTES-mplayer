@@ -1,0 +1,43 @@
+Minimum working:
+mplayer -tv://device=/dev/video0
+
+To dump JPEG frames to a directory, with "nnnnnnnn.jpg" names:
+mplayer -vo jpeg:outdir=t
+(png, ppm, and other formats are also supported)
+
+For info (and resolution):
+
+lsusb  (to find the webcam)
+lsusb -s bbb:ddd -v   (verbose details for bus bbb dev ddd)
+
+(I wrote a script to parse this, then discovered that "v4l2-ctl 
+--list-formats-ext" does it for me.)
+
+Nominally, to capture at a desired frame rate and resolution:
+mplayer -tv:// -tv device=...:driver=v4l2:width=...:height=...:fps=...
+In practice, this gives the same low-res-rescaled-and-slow output.
+Diagnostics _claims_ that it's reading an appropriate real output.
+
+Update: This is because raw mode tops out at 5 or 8 fps (only getting 5?) 
+for those resolutions. Raw mode is input 0, mjpeg is input 1.
+
+"outfmt=mjpeg" forces the _camera_ to output mjpeg, which works at 15 fps.
+
+
+Testing command-line:
+mplayer tv://
+  -tv device=/dev/video0:width=1280:height=720:outfmt=mjpeg:fps=30
+  -vo jpeg:quality=100:outdir=t
+
+(FPS tops out at 15, from the diagnostics, no matter what resolution.)
+("quality=100" is four times the size and drops frame rate; default is 
+fine, and is 60-70. Omit "quality=" term.)
+
+
+(got about 17 fps with mint using the rear port; 153:115)
+(got about 15 fps with 640x480 ditto; 105:103)
+
+
+This can play MJPEG streams:
+mplayer -demuxer lavf http://localhost:8080/stream.mjpg
+(may want -fps 30.0 to maintain synch?)

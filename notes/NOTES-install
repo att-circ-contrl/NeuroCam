@@ -1,0 +1,231 @@
+Building a new machine on an Intel NUC:
+(NOTE - This sets passwords to the default; these should be changed 
+later!)
+
+- Install RAM and SSD.
+
+- Plug in Mint 18.1 USB key.
+- Power on machine.
+- Hit F2 to get to the BIOS menu.
+- Turn UEFI off.
+- Move the USB key to the top of the boot order.
+- F10 to save and exit.
+- From the Linux boot menu, pick "start in compatibility mode".
+- From the GUI, open a terminal window.
+- "sudo bash" to get a root session.
+- "fdisk /dev/sda" to partition the SSD.
+- Delete any existing partitions (usually won't exist).
+- Create a 50 gig OS partition, and 8 gig swap partition, and a third
+partition with the remaining space.
+- Toggle OS and data partitions to type 83 (Linux; default) and the swap
+partition to type 82 (swap). Set the OS partition bootable.
+- Save and exit fdisk.
+- "mke2fs -j /dev/sda1" and "mke2fs -j -m 0 /dev/sda3" to create 
+filesystems.
+- "mkswap /dev/sda2" to initialize the swap partition.
+- Exit the terminal window.
+- Click "install Linux Mint".
+- Do not set up networks.
+- Do not install proprietary software.
+- Select "something else" for target partition.
+- Doubleclick /dev/sda1, select "use as ext3 journaling filesystem",
+check "format", select mount point "/".
+- Doubleclick /dev/sda2, select "use as swap area".
+- Doubleclick /dev/sda3, select "use as ext3 journaling filesystem",
+check "format", type in mount point "/data".
+- Click "install now".
+- Select time zone and keyboard type.
+- "Your name" is "NeuroCam User", "your computer's name" is "neurocam-NN"
+where NN is the machine number, "pick a username" is "neurocam-admin",
+set password to "neurocam".
+- Check "require password to log in".
+- Begin install.
+- When it finishes, click "restart now", and when the system reboots, 
+remove USB key.
+
+After booting to the new install:
+
+- ctrl-alt-F6 to switch to text console #6 (1..6 are valid).
+(on a Mac, it's ctrl-option-function-F6)
+- Log in as "neurocam-admin" (password "neurocam").
+
+If it doesn't let you log in:
+- Reboot, hit F10 to enter boot menu, select USB key from boot devices.
+- Select "start in compatibility mode" from the linux boot menu.
+- Open a terminal, type "sudo bash" to get a root shell.
+- "mount -t auto /dev/sda1 /mnt" to mount the hard disk in "/mnt".
+- "chroot /mnt" to open a new shell that uses "/mnt" as the root folder.
+- "passwd neurocam-admin" to reset neurocam-admin's password.
+- "shutdown -r now" to reboot.
+
+After logging in as "neurocam-admin" on a text terminal:
+
+- "sudo bash" to get a root shell (enter "neurocam" as the password).
+- "passwd" to reset root's password. Set it to "administrator".
+- Log out, and log back in as "root" with password "administrator".
+- "pico /etc/default/grub" to edit the bootloader configuration file.
+- "ctrl-w" to search, look for "quiet splash" (no quotes).
+- Change "quiet splash" to "quiet nosplash text".
+- Run "update-grub2" to apply the configuration change.
+- "shutdown -r now" to reboot.
+
+This may boot to a black screen; that's ok (it's trying to display a
+graphics screen with no screen to display). Use "ctrl-alt-F6" to get to
+a text terminal.
+
+- Log in as "root", password "administrator".
+- Type "ifconfig" to get network interface information. Look for the
+MAC address for the ethernet card ("HWaddr" for a device starting with
+"eno" or "eth").
+- Add the hardware address to the router's whitelist so that the NeuroCam
+can see the internet.
+- Wait 10 seconds, then type "ifconfig" again. When network handshaking 
+has finished, there will be a "inet addr" line with an IP address assigned
+(which should be "192.168.1.NNN").
+- Type "ping 8.8.8.8" to check internet connectivity once the address 
+shows up.
+
+- Type "mkdir /usb" to create a USB drive mountpoint.
+- Insert a NeuroCam update USB key.
+- Manually mount the key ("mount -t auto -o exec /dev/sdb1 /usb"). This
+forces "exec" permissions to allow scripts to be run from the key.
+- Run "/usb/neurocam-install/scripts/do-install.sh".
+
+- "shutdown -r now" to reboot.
+
+
+
+To make a USB update key:
+
+- Insert USB key.
+- Make sure the key is not auto-mounted; unmount it if so.
+- Use "sudo bash" to get a root shell.
+- "fdisk /dev/sdb" to partition the USB key.
+- Delete existing partitions, create one new partition, type 83 (Linux).
+- Save changes and exit fdisk.
+- "sync" to make sure changes are committed.
+- Unplug the key, wait 10 seconds, replug the key.
+- Make sure the key is not auto-mounted; unmount it if so.
+- "mke2fs -j -m 0 -L NeuroUpdate /dev/sdb1" to create a filesystem.
+- "sync" to make sure changes are committed.
+- Mount the key in "/usb".
+- Type "chmod 1777 /usb" to make the USB key writable by users.
+- Log out of being root.
+- Enter the "code" directory in the development tree.
+- Run "make-installkey.sh".
+- "sync" to make sure changes are committed.
+- Umount the USB key.
+
+
+To format a USB drive or USB key for NeuroCam data:
+
+- Connect USB device.
+- Make sure the device is not auto-mounted; umount if so.
+- Use "sudo bash" to get a root shell.
+- "fdisk /dev/sdb" to partition the USB device.
+- Delete existing partitions, create one new partition, type 7 (exfat).
+- Save changes and exit fdisk.
+- "sync" to make sure changes are committed.
+- Unplug the key, wait 10 seconds, replug the key.
+- Make sure the device is not auto-mounted; umount if so.
+- "mkexfatfs -n NeuroData /dev/sdb1" to create an exfat filesystem.
+- "sync" to make sure changes are committed.
+
+
+
+(Old manual-install information follows.)
+
+Packages to install on NeuroCam platforms:
+
+Required:
+
+libproc-daemon-perl
+mplayer
+v4l-utils
+perlmagick
+libav-tools  (replacement for ffmpeg)
+apache2
+imagemagick
+cu
+openssh-server  (for remote debug)
+exfat-fuse  (for "exfat", the only really portable large filesystem)
+exfat-utils (ditto)
+
+Optional:
+
+imagemagick-doc
+
+
+Unknown (seems to be "no" or "already present"):
+
+mjpegtools
+liblavplay-2.1-0
+liblavjpeg-2.1-0
+liblavfile-2.1-0
+
+
+Updating everything:
+
+apt-get update  (fetches the sources list)
+apt-get upgrade  (upgrades anything that needs it)
+
+
+Other actions needed:
+
+add neurocam-admin and www-data to the "video" and "dialout" groups
+add neurocam-admin to the "www-data" group
+restart apache via "/etc/init.d/apache2 restart"
+
+chmod u+s /sbin/mount.exfat-fuse
+mkdir /usb
+add to /etc/fstab:
+/dev/sdb1	/usb	auto	noauto,user	0	0
+
+chmod u+s /sbin/shutdown
+
+
+Installing/updating the NeuroCam software:
+
+- To update an existing install, run neurocam-scripts/do-update.sh.
+Run this twice if scripts have updated (the first pass copies the scripts 
+to the local script directory, the second runs the updated scripts).
+- To update Mint's packages, connect to the internet and run 
+neurocam-scripts/do-mintupdate.sh.
+- To create a new install, mount an install key in /usb manually with the 
+"-o exec" option and run /usb/neurocam-install/scripts/do-install.sh.
+
+
+Making USB keys:
+
+- Any ext3 keys have to be chmodded 1777 (to add the "t" bit), as their 
+root directories are owned by root.
+- Keys formatted with exfat are fine as-is (no permissions checking).
+- To make an install key, go to the "code" directory in the dev 
+environment and run "make-installkey.sh".
+
+
+AVR cruft:
+
+Only needed if we want to run a burner from the machine.
+
+
+General configuration:
+
+- Hostname should be "neurocam-NN".
+- Default root login/pw "root"/"administrator".
+- Default user login/pw "neurocam-admin"/"neurocam".
+- Boot to text mode by default.
+(edit /boot/grub/grub.cfg, change "quiet splash" in the default entry to 
+"quiet nosplash text", reboot)
+(FIXME - We're supposed to do this by editing /etc/default/grub and 
+running update-grub. It has a similar line. Ignore the "console" line.)
+
+
+UVC driver (optional):
+
+- Copy the uvc/*3.16*modded directory to home.
+- (FIXME - That's for upgraded mint 17. We need a different driver version 
+for mint 18.)
+- Build and install the driver. (NOTE: save the old one 
+first! Move it to uvcvideo.ko.original in the target directory.)
+(It'll build as-is; nothing more needs to be fetched.)

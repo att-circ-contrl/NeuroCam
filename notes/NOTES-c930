@@ -1,0 +1,5 @@
+Per a web forum post, the c930 only accepts the following exposure values:
+
+3, 4, 9, 19, 38, 77, 156, 312, 624, 1250, 2074
+
+Anything else holds for one frame and then resets.

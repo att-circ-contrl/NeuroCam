@@ -1,0 +1,52 @@
+VLC can be invoked with:
+
+vlc --v4l2-width=1280 --v4l2-height=720 v4l2:///dev/video0
+
+This defaults to uncompressed data, not mjpeg.
+
+Options documented at:  https://wiki.videolan.org/Documentation:Modules/v4l2/
+
+Of interest:
+--v4l2-fps 15.0
+
+Getting info:
+vlc -vvv --color v4l2:///dev/video0 --run-time 1 vlc://quit -I dummy -V dummy -A dummy
+...this gives lots and lots of useless cruft and needs to be manually killed.
+
+It does, however, say:
+capability flags 0x05000001 (overall 0x85000001)
+supports YUYV (YUV 4:2:2)
+supports compressed MJPEG
+emulates a number of other raw formats.
+Lists frame rates at this format (up to 25 Hz at 1280x720).
+
+... "v4l" supports mjpeg ("--v4l-mjpeg"), but v4l2 doesn't?
+... ah. Use "--v4l2-chroma mjpeg". -> "invalid codec mjpeg".
+... ah. use "mjpg", not "mjpeg".
+...getting invalid frame errors?  --> these are from libav and are known.
+
+... "--no-audio" is useful for me.
+
+* "cvlc" is the command-line invocation ("vlc" brings up an interface with a
+warning).
+
+
+Alternate formatting (: args are per-stream, not global):
+
+cvlc v4l2:///dev/video0 :v4l2-width=1280 :v4l2-height=720 :v4l2-chroma=MJPG 
+  :v4l2-fps=30
+(fps snafu)
+(faster but still questionable if 30 fps for 640x480)
+
+
+To screencast from the command line using vlc:
+
+cvlc screen:// --screen-fps=30.0
+":sout=#transcode{vcodec=MJPG,vb=1000,scale=0.5,acodec=none}:http{mux=
+mpjpeg,dst=:8080/stream.mjpg}" :sout-keep
+
+(The " marks are needed to prevent the shell from messing with {}.)
+
+
+To play an MJPEG in the GUI:
+vlc http://localhost:8080/stream.mjpg

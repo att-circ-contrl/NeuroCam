@@ -1,0 +1,51 @@
+From code inspection, the NeuroCam is doing the following:
+
+
+(in libcam)
+
+v4l2-ctl --device=XX --info
+v4l2-ctl --device=XX --list-ctrls
+v4l2-ctl --device=XX --list-ctrls-menu   (this lists more value options)
+v4l2-ctl --device=XX
+  --list-frameintervals=width=NN:height=NN:pixelformat=MJPG
+v4l2-ctl --device=XX --set-ctrl exposure_auto=(1/3) (1 = manual, 3 = auto)
+v4l2-ctl --device=XX --set-ctrl exposure_absolute=NN
+v4l2-ctl --device=XX --set-crtl focus_auto=(0/1)
+v4l2-ctl --device=XX --set-ctrl focus_absolute=NN
+
+
+
+(in libcam for frame-grabbing, daemon for capture)
+(FIXME - Put this in a library the next time I refactor things.)
+
+
+(capture a fixed number of frames from a camera)
+(does this for variable FPS and 5 seconds worth of frames, or 15 fps 1 frame)
+
+mplayer tv:// -tv device=XX:width=NN:height=NN:outfmt=mjpeg:fps=NN
+  (-vo null) or (-vo jpeg:outdir=/tmp/vtemp)
+  -quiet -nosound -frames NN 2>/dev/null
+
+(capture one frame from a URL)
+
+mplayer -demuxer lavf http://XX -vo jpeg:outdir=/tmp/vtemp
+  -quiet -nosound -frames 1 2>/dev/null
+
+
+(stream from a camera)
+
+mplayer tv:// -tv device=XX:width=NN:height=NN:outfmt=mjpg:fps=NN
+  -vo jpeg:outdir=XX -udp-master -udp-ip 127.0.0.1 -udp-port NN
+  -really-quiet -nosound
+
+(stream from a URL)
+
+mplayer -demuxer lavf http://XX -fps 30 -vo jpeg:outdir=XX
+  -udp-master -udp-ip 127.0.0.1 -udp-port NN -really-quiet -nosound
+
+
+
+NOTE - Default quality is "60-70", from my notes.
+Frame rate drops with improved quality and frames get 4x bigger at "100".
+
+To set quality, use:   -vo jpeg:quality=NN:outdir=XX

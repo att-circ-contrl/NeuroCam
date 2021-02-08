@@ -1,0 +1,7 @@
+Use v4l2-ctl to tune settings and query cameras.
+
+Useful items:
+
+--list-formats-ext    (gives resolution/fps/encoding combinations available)
+--list-ctrls    (shows all controls and their possible/current/defalt vals)
+--set-ctrl foo=bar   (sets a control; multiple instances of this are fine)

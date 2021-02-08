@@ -1,0 +1,71 @@
+To download and rebuild the UVC driver:
+
+*** Problem: The Trusty source is 3.13, the headers are 3.16, and there
+was a change to V4L2's video buffer structure between those versions.
+
+*** Attempt from 16 Nov 2016:
+
+- Download kernel 3.16.38 in .tar.xz form from www.kernel.org.
+- Copy the uvc source from drivers/media/usb/uvc.
+- (Building the kernel is optional; can be done per below if needed.)
+
+This builds and functions correctly (without needing a kernel build) in
+unmodified form.
+
+
+
+*** Another attempt:
+
+This requires a rebuild of the appropriate kernel source. For my version of
+Mint:
+
+(make and enter a scratch directory)
+git clone git://kernel.ubuntu.com/ubuntu/ubuntu-trusty.git
+(wait while this downloads 2.5 gigabytes)
+cp -r ubuntu-trusty/drivers/media/usb/uvc (location for copy of uvc source)
+make oldconfig
+(hit enter for the default answer to every question)
+make prepare
+make modules
+(wait while this rebuilds modules and creates Module.symvers)
+(this takes a very long time; at least an hour)
+
+...Then "make -C" using the build tree's root.
+
+FIXME - This has missing version information, and "modprobe --force" still
+fails, due to bad exec format.
+
+*** End of latest attempt.
+
+
+*** FIXME - Old stuff begins.
+(NOTE - This is for an old kernel version!)
+git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git uvcvideo
+cd uvcvideo
+git remote add uvcviceo git://linuxtv.org/pinchartl/uvcvideo.git
+git remote update
+git checkout -b uvcvideo-master uvcvideo/uvcvideo-next
+
+(NOTE: This clones the entire Linux kernel source tree - about 1 GB)
+
+(NOTE - The kernel doesn't need to be compiled; this is just a way to get
+the source for the uvc driver.)
+*** FIXME - Old stuff ends.
+
+
+*** Other notes:
+
+Uname -a says:
+
+Linux kaon-mint 3.16.0-38-generic #52~14.04.1-Ubuntu SMP Fri May 8 09:43:57 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+
+Uname -r says:
+
+3.16.0-38-generic
+
+
+Installing modules:
+
+sudo rmmod uvcvideo
+(edit /etc/modprobe.d/uvcvideo.conf to specify options)
+sudo modprobe uvcvideo
