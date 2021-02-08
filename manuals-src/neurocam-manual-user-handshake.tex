@@ -1,0 +1,51 @@
+% NeuroCam manual - Game Machine Handshaking
+% Written by Christopher Thomas.
+% Copyright (c) 2021 by Vanderbilt University. This work is released under
+% the Creative Commons Attribution-ShareAlike 4.0 International License.
+
+\chapter{Game Machine Handshaking}
+\label{handshake}
+
+The NeuroCam system queries machines on the local network to find content
+providers. For the prototype system, the only network content provider is
+the game machine.
+
+The game machine should listen for UDP packets on port 8888. These will
+be any of the following messages in plain text:
+\begin{itemize}
+\item ``\verb+looking for sources reply to port NNNN+''
+\item ``\verb+talk to me on port NNNN+''
+\item ``\verb+stop talking+''
+\end{itemize}
+
+The game machine may send any of the following responses:
+\begin{itemize}
+\item ``\verb+stream source at http://URL label XXXX+''
+\item ``\verb+message source at HOST:PORT label XXXX+''
+\item ``\verb+MSG (message text goes here)+''
+\end{itemize}
+
+The game machine will typically offer one video stream (the game video) and
+one message source (which sends plain text timestamps for synchronization of
+game events and NeuroCam data).
+
+The video URL will generally be of the form
+``\verb+http://(host IP):(port)/(file).mjpeg+''. Any valid URL should work,
+as long as the file has the suffix ``\verb+mjpeg+'' and as long as the
+host is given by IP address rather than hostname. This video stream will be
+fetched by the NeuroCam and treated like any other camera feed.
+
+Message sources must use IP addresses (not hostnames) as the host identifier.
+These will be sent ``\verb+talk to me+'' and ``\verb+stop talking+''
+messages, and when active are expected to send plain text UDP messages to
+the NeuroCam machine. Messages are expected to begin with ``\verb+MSG +'',
+with message content transcribed to the NeuroCam session log file. Message
+source and NeuroCam timestamp information are also recorded in the log.
+
+Multiple machines may respond to the broadcast query, and the same machine
+may respond multiple times to one query. As long as the message and video
+stream sources indicated by the responses are unique, they will all be
+available to the NeuroCam system.
+
+%
+% This is the end of the file.

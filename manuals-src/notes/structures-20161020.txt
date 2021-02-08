@@ -1,0 +1,306 @@
+Camera data begins:
+(hash)
+  /dev/video0 ->  (hash)
+    desiredexp ->  (scalar) "166"
+    desiredrate ->  (scalar) "30"
+    desiredsize ->  (scalar) "1280x960"
+    device ->  (scalar) "/dev/video0"
+    exposure ->  (hash)
+      currentval ->  (scalar) "166"
+      default ->  (scalar) "166"
+      manual ->  (scalar) "1"
+      max ->  (scalar) "10000"
+      min ->  (scalar) "1"
+      step ->  (scalar) "1"
+      (end of hash)
+    model ->  (scalar) "Logitech, Inc. Webcam C270"
+    sizes ->  (hash)
+      1024x576 ->  (list)
+        0 :  (scalar) "30"
+        1 :  (scalar) "25"
+        2 :  (scalar) "20"
+        3 :  (scalar) "15"
+        (end of list)
+      1280x720 ->  (list)
+        0 :  (scalar) "30"
+        1 :  (scalar) "25"
+        2 :  (scalar) "20"
+        3 :  (scalar) "15"
+        (end of list)
+      1280x960 ->  (list)
+        0 :  (scalar) "30"
+        1 :  (scalar) "25"
+        2 :  (scalar) "20"
+        3 :  (scalar) "15"
+        (end of list)
+      640x360 ->  (list)
+        0 :  (scalar) "30"
+        1 :  (scalar) "25"
+        2 :  (scalar) "20"
+        3 :  (scalar) "15"
+        (end of list)
+      640x480 ->  (list)
+        0 :  (scalar) "30"
+        1 :  (scalar) "25"
+        2 :  (scalar) "20"
+        3 :  (scalar) "15"
+        (end of list)
+      960x720 ->  (list)
+        0 :  (scalar) "30"
+        1 :  (scalar) "25"
+        2 :  (scalar) "20"
+        3 :  (scalar) "15"
+        (end of list)
+      (end of hash)
+    (end of hash)
+  (end of hash)
+Camera data ends.
+
+Network data begins:
+(list)
+  0 :  (hash)
+    label ->  (scalar) "Unity"
+    type ->  (scalar) "stream"
+    url ->  (scalar) "http://192.168.37.65:8080/stream.mjpg"
+    (end of hash)
+  1 :  (hash)
+    host ->  (scalar) "192.168.37.65"
+    label ->  (scalar) "Unity"
+    port ->  (scalar) "8888"
+    type ->  (scalar) "talker"
+    (end of hash)
+  2 :  (hash)
+    label ->  (scalar) "Unity"
+    type ->  (scalar) "stream"
+    url ->  (scalar) "http://192.168.37.65:8080/stream.mjpg"
+    (end of hash)
+  3 :  (hash)
+    host ->  (scalar) "127.0.0.1"
+    label ->  (scalar) "Unity"
+    port ->  (scalar) "8888"
+    type ->  (scalar) "talker"
+    (end of hash)
+  (end of list)
+Network data ends.
+
+Session data begins:
+(hash)
+  cameras ->  (hash)
+    /dev/video0 ->  (hash)
+      device ->  (scalar) "/dev/video0"
+      exp ->  (scalar) "+0"
+      explist ->  (hash)
+        +0 ->  (scalar) "166"
+        +1 ->  (scalar) "249"
+        +2 ->  (scalar) "332"
+        +3 ->  (scalar) "498"
+        -1 ->  (scalar) "116"
+        -2 ->  (scalar) "83"
+        -3 ->  (scalar) "50"
+        (end of hash)
+      meta ->  (hash)
+        desiredexp ->  (scalar) "166"
+        desiredrate ->  (scalar) "30"
+        desiredsize ->  (scalar) "1280x960"
+        device ->  (scalar) "/dev/video0"
+        exposure ->  (hash)
+          currentval ->  (scalar) "166"
+          default ->  (scalar) "166"
+          manual ->  (scalar) "1"
+          max ->  (scalar) "10000"
+          min ->  (scalar) "1"
+          step ->  (scalar) "1"
+          (end of hash)
+        model ->  (scalar) "Logitech, Inc. Webcam C270"
+        sizes ->  (hash)
+          1024x576 ->  (list)
+            0 :  (scalar) "30"
+            1 :  (scalar) "25"
+            2 :  (scalar) "20"
+            3 :  (scalar) "15"
+            (end of list)
+          1280x720 ->  (list)
+            0 :  (scalar) "30"
+            1 :  (scalar) "25"
+            2 :  (scalar) "20"
+            3 :  (scalar) "15"
+            (end of list)
+          1280x960 ->  (list)
+            0 :  (scalar) "30"
+            1 :  (scalar) "25"
+            2 :  (scalar) "20"
+            3 :  (scalar) "15"
+            (end of list)
+          640x360 ->  (list)
+            0 :  (scalar) "30"
+            1 :  (scalar) "25"
+            2 :  (scalar) "20"
+            3 :  (scalar) "15"
+            (end of list)
+          640x480 ->  (list)
+            0 :  (scalar) "30"
+            1 :  (scalar) "25"
+            2 :  (scalar) "20"
+            3 :  (scalar) "15"
+            (end of list)
+          960x720 ->  (list)
+            0 :  (scalar) "30"
+            1 :  (scalar) "25"
+            2 :  (scalar) "20"
+            3 :  (scalar) "15"
+            (end of list)
+          (end of hash)
+        (end of hash)
+      rate ->  (scalar) "30"
+      size ->  (scalar) "1280x960"
+      updateport ->  (scalar) "9001"
+      (end of hash)
+    (end of hash)
+  cmdport ->  (scalar) "9999"
+  monitorfile ->  (scalar) "stream.mjpg"
+  monitorport ->  (scalar) "8090"
+  slots ->  (hash)
+    FaceA ->  (hash)
+      type ->  (scalar) "none"
+      (end of hash)
+    FaceB ->  (hash)
+      type ->  (scalar) "none"
+      (end of hash)
+    SceneA ->  (hash)
+      config ->  (hash)
+        device ->  (scalar) "/dev/video0"
+        exp ->  (scalar) "+0"
+        explist ->  (hash)
+          +0 ->  (scalar) "166"
+          +1 ->  (scalar) "249"
+          +2 ->  (scalar) "332"
+          +3 ->  (scalar) "498"
+          -1 ->  (scalar) "116"
+          -2 ->  (scalar) "83"
+          -3 ->  (scalar) "50"
+          (end of hash)
+        meta ->  (hash)
+          desiredexp ->  (scalar) "166"
+          desiredrate ->  (scalar) "30"
+          desiredsize ->  (scalar) "1280x960"
+          device ->  (scalar) "/dev/video0"
+          exposure ->  (hash)
+            currentval ->  (scalar) "166"
+            default ->  (scalar) "166"
+            manual ->  (scalar) "1"
+            max ->  (scalar) "10000"
+            min ->  (scalar) "1"
+            step ->  (scalar) "1"
+            (end of hash)
+          model ->  (scalar) "Logitech, Inc. Webcam C270"
+          sizes ->  (hash)
+            1024x576 ->  (list)
+              0 :  (scalar) "30"
+              1 :  (scalar) "25"
+              2 :  (scalar) "20"
+              3 :  (scalar) "15"
+              (end of list)
+            1280x720 ->  (list)
+              0 :  (scalar) "30"
+              1 :  (scalar) "25"
+              2 :  (scalar) "20"
+              3 :  (scalar) "15"
+              (end of list)
+            1280x960 ->  (list)
+              0 :  (scalar) "30"
+              1 :  (scalar) "25"
+              2 :  (scalar) "20"
+              3 :  (scalar) "15"
+              (end of list)
+            640x360 ->  (list)
+              0 :  (scalar) "30"
+              1 :  (scalar) "25"
+              2 :  (scalar) "20"
+              3 :  (scalar) "15"
+              (end of list)
+            640x480 ->  (list)
+              0 :  (scalar) "30"
+              1 :  (scalar) "25"
+              2 :  (scalar) "20"
+              3 :  (scalar) "15"
+              (end of list)
+            960x720 ->  (list)
+              0 :  (scalar) "30"
+              1 :  (scalar) "25"
+              2 :  (scalar) "20"
+              3 :  (scalar) "15"
+              (end of list)
+            (end of hash)
+          (end of hash)
+        rate ->  (scalar) "30"
+        size ->  (scalar) "1280x960"
+        updateport ->  (scalar) "9001"
+        (end of hash)
+      type ->  (scalar) "camera"
+      (end of hash)
+    SceneB ->  (hash)
+      type ->  (scalar) "none"
+      (end of hash)
+    SceneC ->  (hash)
+      type ->  (scalar) "none"
+      (end of hash)
+    Unity ->  (hash)
+      config ->  (hash)
+        delay ->  (scalar) "1000"
+        label ->  (scalar) "Unity"
+        meta ->  (hash)
+          label ->  (scalar) "Unity"
+          type ->  (scalar) "stream"
+          url ->  (scalar) "http://192.168.37.65:8080/stream.mjpg"
+          (end of hash)
+        updateport ->  (scalar) "9004"
+        url ->  (scalar) "http://192.168.37.65:8080/stream.mjpg"
+        (end of hash)
+      type ->  (scalar) "stream"
+      (end of hash)
+    (end of hash)
+  streams ->  (hash)
+    http://192.168.37.65:8080/stream.mjpg ->  (hash)
+      delay ->  (scalar) "1000"
+      label ->  (scalar) "Unity"
+      meta ->  (hash)
+        label ->  (scalar) "Unity"
+        type ->  (scalar) "stream"
+        url ->  (scalar) "http://192.168.37.65:8080/stream.mjpg"
+        (end of hash)
+      updateport ->  (scalar) "9004"
+      url ->  (scalar) "http://192.168.37.65:8080/stream.mjpg"
+      (end of hash)
+    (end of hash)
+  talkers ->  (hash)
+    127.0.0.1:8888 ->  (hash)
+      enabled ->  (scalar) "0"
+      host ->  (scalar) "127.0.0.1"
+      key ->  (scalar) "127.0.0.1:8888"
+      label ->  (scalar) "Unity"
+      meta ->  (hash)
+        host ->  (scalar) "127.0.0.1"
+        label ->  (scalar) "Unity"
+        port ->  (scalar) "8888"
+        type ->  (scalar) "talker"
+        (end of hash)
+      myport ->  (scalar) "9005"
+      port ->  (scalar) "8888"
+      (end of hash)
+    192.168.37.65:8888 ->  (hash)
+      enabled ->  (scalar) "1"
+      host ->  (scalar) "192.168.37.65"
+      key ->  (scalar) "192.168.37.65:8888"
+      label ->  (scalar) "Unity"
+      meta ->  (hash)
+        host ->  (scalar) "192.168.37.65"
+        label ->  (scalar) "Unity"
+        port ->  (scalar) "8888"
+        type ->  (scalar) "talker"
+        (end of hash)
+      myport ->  (scalar) "9003"
+      port ->  (scalar) "8888"
+      (end of hash)
+    (end of hash)
+  (end of hash)
+Session data ends.

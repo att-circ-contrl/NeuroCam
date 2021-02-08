@@ -1,0 +1,453 @@
+% NeuroCam manual - NeuroCam Computer
+% Written by Christopher Thomas.
+% Copyright (c) 2021 by Vanderbilt University. This work is released under
+% the Creative Commons Attribution-ShareAlike 4.0 International License.
+
+\chapter{NeuroCam Computer}
+\label{machine}
+
+The NeuroCam computer is a small--form--factor x86--architecture computer
+running the Linux Mint operating system and the NeuroCam software.
+
+To build a new NeuroCam computer, you will need the following:
+\begin{itemize}
+%
+\item A suitable computer.
+\item A USB stick containing the Linux Mint installer.
+\item A USB stick containing the NeuroCam installer.
+%
+\end{itemize}
+
+Details of the hardware and the installation process are described in their
+appropriate sections. The procedure for making new USB sticks is also
+described.
+
+%
+%
+%
+\section{Hardware}
+
+The NeuroCam computer must be powerful enough to perform image compositing
+in real-time, have a solid--state drive that is fast, large, and has high
+endurance, and have enough RAM to handle any cacheing and buffering
+transparently.
+
+The components used for the NeuroCam prototype are as follows:
+
+\begin{tabular}{llll}\hline
+Qty & Description & Manuf. p/n & NewEgg SKU \\
+\hline
+%
+1 & Intel NUC with Core i7 & Intel NUC6i7KYK & N82E16856102166 \\
+% This is 1x 8 gig.
+1 & DDR4 260-pin SO-DIMM 8G$^*$ & Ripjaws F4-2133C15S-8GRS & N82E16820232147 \\
+% This is 2x 4 gig. We only _need_ 1x 4 gig.
+%1 & DDR4 260-pin SO-DIMM 4G$^*$ & Ripjaws F4-2133C15D-8GRS & N82E16820232146 \\
+1 & SSD 1 TB high-endurance M.2 & Samsung MZ-N5E1T0BW & N82E16820147567 \\
+%
+\hline
+\multicolumn{4}{l}{$^*$A single 4-gig stick is sufficient, but no longer in
+NewEgg's catalogue.} \\
+\end{tabular}
+
+To assemble the computer (Intel NUC version):
+\begin{itemize}
+%
+\item Ensure that the workspace is free of clutter and clean.
+
+\item Ensure that clothing is not carrying electrostatic charge. A humidifier
+can reduce static electricity in the workspace if necessary.
+
+\item Remove the skull-logo faceplate and set it aside. Unpack the plain
+faceplate as a replacement.
+
+\item With the machine interior exposed, carefully seat the RAM in the lower
+DIMM slot. Apply \textbf{gentle} pressure until the latches engage to secure
+the RAM. It may be necessary to open the latches by hand to fully insert the
+RAM.
+
+\item Remove the securing screw for the first solid-state drive slot, and
+insert the solid-state drive. Ensure that the drive is seated firmly in its
+connector, and reinstall the securing screw.
+
+\item Reinstall the faceplate.
+%
+\end{itemize}
+
+%
+%
+%
+\section{Installing Mint and the NeuroCam Software}
+
+The prototype NeuroCam machine used Linux Mint 18.1. This version or any later
+version should have full driver support for the specific Intel NUC machine
+described above.
+
+You will need a Mint 18.1 install USB stick and a NeuroCam install USB stick.
+Making these is described in Sections \ref{machine-usbmint} and
+\ref{machine-usb}, respectively.
+
+%
+\subsection{First-Time Installation}
+
+To install Linux and the NeuroCam software:
+\begin{itemize}
+%
+\item Connect the machine to a keyboard, a mouse, and an HDMI monitor.
+\item With the machine unpowered, plug in the Mint 18.1 USB stick.
+\item Turn on the machine.
+\item Hit F2 to get to the BIOS menu.
+\item Turn UEFI off. This may be called ``Windows compatibility''.
+\item Edit the boot order, moving the USB stick to the top.
+\item Hit F10 to save and exit.
+%
+\item (The machine should now show the Linux boot menu.)
+\item From the Linux boot menu, pick ``start in compatibility mode''.
+\item From the GUI, open a terminal window.
+\item Type ``\verb+sudo bash+'' to get a root session.
+\item Type ``\verb+fdisk /dev/sda+'' to partition the solid--state drive.
+\item Delete any existing partitions. The normally won't be any.
+\item Create a 50 gigabyte partition (for the OS), an 8 gigabyte partition
+(for swap space), and a third partition (for data).
+\item Set the OS and data partitions to type 83 (Linux; this may be set
+already by default). Set the swap partition to type 82 (Linux swap).
+\item Set the ``bootable'' flag on the OS partition.
+\item Save and exit \verb+fdisk+.
+\item Type ``\verb+mke2fs -j /dev/sda1+'' and
+``\verb+mke2fs -j -m 0 /dev/sda3+'' to create filesystems on the OS and
+data partitions, respectively.
+\item Type ``\verb+mkswap /dev/sda2+'' to initialize the swap partition.
+\item Type ``\verb+exit+'' twice to leave the root shell and the terminal
+window.
+%
+\item Click ``Install Linux Mint''.
+\item Do not set up networks.
+\item Do not install proprietary software.
+\item Select ``Something Else'' for the target partition.
+\item Doubleclick ``\verb+/dev/sda1+'', select ``use as ext3 journaling
+filesystem'', check ``format'', and select mount point ``/''.
+\item Doubleclick ``\verb+/dev/sda2+'', and select ``use as swap area''.
+\item Doubleclick ``\verb+/dev/sda3+'', select ``use as ext3 journaling
+filesystem'', check ``format'', and select mount point ``/data''.
+\item Click ``Install Now''.
+\item Select time zone and keyboard type.
+\item For ``Your Name'', enter ``NeuroCam User''. For ``Your Computer's
+Name'', enter ``\verb+neurocam-NN+'', where ``\verb+NN+'' is the number
+assigned to this NeuroCam machine. For ``Pick a User Name'', enter
+``\verb+neurocam-admin+''. For the password, enter ``\verb+neurocam+''.
+\par
+\textbf{This password is easily guessed, and so should be changed when the
+system is installed per Chapter \ref{setup}.}
+\item Check ``require password to log in''.
+\item Begin the install.
+\item When the installation finishes, click ``restart now''.
+\item Remove the USB stick when the system reboots.
+%
+\item When booting to a new install, press \verb+ctrl-alt-F6+ to switch to
+text console \#6 (1 through 6 are valid). If using a Mac keyboard, use
+\verb+ctrl-option-function-F6+.
+\item Log in as ``\verb+neurocam-admin+'' with the password
+``\verb+neurocam+''.
+\par
+\textbf{NOTE:} If the system does not let you log in with the credentials
+supplied above, see below for the password reset method.
+%
+\item (You should now be logged in as ``\verb+neurocam-admin+'' on a text
+console.)
+\item Type ``\verb+sudo bash+'' to get a root shell. Enter
+``\verb+neurocam+'' as the \verb+sudo+ password.
+\item Type ``\verb+passwd+'' to reset the \verb+root+ account's password.
+Set it to ``\verb+administrator+''.
+\par
+\textbf{This password is easily guessed, and so should be changed when the
+system is installed per Chapter \ref{setup}.}
+\item Type ``\verb+exit+'' twice to leave the root shell and the console 
+login session.
+\item (You should now be at a console login prompt.)
+\item Log in as ``\verb+root+'' with the password ``\verb+administrator+''.
+\item Type ``\verb+nano /etc/default/grub+'' to edit the bootloader
+configuration file.
+\item Press \verb+ctrl-w+ to search, and search for ``\verb+quiet splash+''.
+\item Change ``\verb+quiet splash+'' to ``\verb+quiet nosplash text+''.
+\item Press \verb+ctrl-o+ to save, and \verb+ctrl-x+ to exit.
+\item Type ``\verb+update-grub2+'' to apply the configuration change.
+\item Type ``\verb+systemctl disable mdm+'' to turn off the GUI manager.
+\item Type ``\verb+shutdown -r now+'' to reboot.
+%
+\item (The machine should boot per normal.)
+\item If the machine has a black screen, press \verb+ctrl-alt-F6+ to get
+to a text console.
+\item Log in as ``\verb+root+'' with the password ``\verb+administrator+''.
+\item Type ``\verb+ifconfig+'' to get network interface information. Look
+for a field named ``\verb+HWaddr+''; this is the MAC address for a given
+network interface. Write down (and doublecheck) the MAC address for the
+ethernet jack (the device name will start with ``\verb+eno+'' or
+``\verb+eth+'').
+\item Plug the NeuroCam computer into one of the router's LAN ports.
+\item Add the hardware address to the router's whitelist so that the
+NeuroCam computer can see the network (per Chapter \ref{router}).
+\item Wait 10 seconds, and then type ``\verb+ifconfig+'' again. When network
+handshaking has finished, there will be an ``\verb+inet addr+'' field with
+an IP address assigned. This address should be ``\verb+192.168.1.NN+'', for
+some number ``\verb+NN+''.
+\item Plug an internet cable into the router's WAN port so that the internet
+is visible.
+\par
+\textbf{This is needed in order to update the operating system, but should
+otherwise be disconnected.}
+\item Type ``\verb+ping 8.8.8.8+'' to check internet connectivity. A response
+of ``\verb+64 bytes from 8.8.8.8+'' means that the internet is visible.
+\item Type ``\verb+mkdir /usb+'' to create a manual mount point for the USB
+stick. This only needs to be done once.
+\item Make sure no other USB sticks are in the machine, and insert a
+NeuroCam update USB stick.
+\item Type ``\verb+mount -t auto -o exec /dev/sdb1 /usb+'' to manually mount
+the USB stick and to allow scripts to be run from the stick.
+\par
+\textbf{NOTE:} If a second solid--state drive is in the system (see below),
+use ``\verb+/dev/sdc1+'' instead of ``\verb+/dev/sdb1+'' above.
+\item Type ``\verb+/usb/neurocam-install/scripts/do-install.sh+'' to perform
+first-time NeuroCam software installation. This will take a while.
+\par
+\textbf{NOTE:} This should skip most confirmation steps, but may still ask for
+user input. Default settings should always be acceptable.
+\item Once this has finished, type ``\verb+shutdown -r now+'' to reboot.
+\item Remove the USB stick when the system reboots.
+\item Disconnect the router from the internet by unplugging the WAN cable.
+%
+\end{itemize}
+
+%
+\subsection{Updating Linux and the NeuroCam Software}
+
+Updating Linux may be done whenever desired. This normally isn't needed,
+unless a NeuroCam software update indicates that it needs updated OS
+packages as well.
+
+\textbf{NOTE:} If the NeuroCam computer is ever exposed to the internet or
+to any other external network, keeping Linux updated is a good idea, as this
+will patch security holes that are discovered in its software.
+
+Updating Linux Mint requires an internet connection. Updating the NeuroCam
+software does not.
+
+To update Linux Mint:
+\begin{itemize}
+%
+\item (Turn on the machine and allow it to boot per normal.)
+\item If the machine has a black screen, press \verb+ctrl-alt-F6+ to get
+to a text console.
+\item Log in as ``\verb+root+'' with the password ``\verb+administrator+''.
+\item Plug the NeuroCam computer into one of the router's LAN ports.
+\item Wait 10 seconds, and then type ``\verb+ifconfig+''. When network
+handshaking has finished, there will be an ``\verb+inet addr+'' field with
+an IP address assigned. This address should be ``\verb+192.168.1.NN+'', for
+some number ``\verb+NN+''.
+\item Plug an internet cable into the router's WAN port so that the internet
+is visible.
+\par
+\textbf{This is needed in order to update the operating system, but should
+otherwise be disconnected.}
+\item Type ``\verb+ping 8.8.8.8+'' to check internet connectivity. A response
+of ``\verb+64 bytes from 8.8.8.8+'' means that the internet is visible.
+\item Type ``\verb+~/neurocam-scripts/do-mintupdate.sh+''. This may take a
+while, depending on how many packages need to be updated.
+\par
+\textbf{NOTE:} This should skip most confirmation steps, but may still ask for
+user input. Default settings should always be acceptable.
+\item Once this has finished, type ``\verb+shutdown -r now+'' to reboot.
+\item Disconnect the router from the internet by unplugging the WAN cable.
+\end{itemize}
+
+To update the NeuroCam software:
+\begin{itemize}
+%
+\item (Turn on the machine and allow it to boot per normal.)
+\item If the machine has a black screen, press \verb+ctrl-alt-F6+ to get
+to a text console.
+\item Log in as ``\verb+root+'' with the password ``\verb+administrator+''.
+\item Make sure no other USB sticks are in the machine, and insert a
+NeuroCam update USB stick.
+\item Wait five seconds, then type ``\verb+mount /usb+''.
+\item Type ``\verb+~/neurocam-scripts/do-update.sh+''.
+\item Once this has finished, type ``\verb+shutdown -r now+'' to reboot.
+\item Remove the USB stick when the system reboots.
+%
+\end{itemize}
+
+%
+\subsection{Logging In Over the Network}
+
+When logging into a NeuroCam machine on--site, installing a monitor might not 
+be practical. As long as a machine is available that is authorized to connect
+to the NeuroCam network, logging in can be done remotely.
+
+To log into the NeuroCam machine using a network connection:
+\begin{itemize}
+\item Connect to the NeuroCam system's wireless network.
+\item Connect to the NeuroCam machine using the ``\verb+ssh+'' protocol with
+username ``\verb+neurocam-admin+''. Under Linux or MacOS, this can be done
+from a terminal window by typing ``\verb+ssh neurocam-admin@192.168.1.NN+'',
+where ``\verb+NN+'' is from the IP address from the sticker on the NeuroCam 
+machine. Under Windows, a ``terminal program'' such as ``\verb+PuTTY+'' may
+be needed.
+\item Enter the ``\verb+neurocam-admin+'' account's password when prompted.
+\item Type ``\verb+su+'' (\textbf{not} ``\verb+sudo+'').
+\item Enter the ``\verb+root+'' account's password when prompted.
+\item Type ``\verb+cd ~+''
+\item You are now logged in as ``\verb+root+'' and are in \verb+root+'s
+home directory.
+\end{itemize}
+
+%
+\subsection{Resetting Passwords}
+\label{machine-password}
+
+To reset a password for an account that you know the existing password for:
+\begin{itemize}
+\item Log in as that account.
+\item Type ``\verb+passwd+''.
+\item Enter the new password when prompted.
+\end{itemize}
+
+To reset the ``\verb+neurocam-admin+'' password when you \textit{can} log
+in as ``\verb+root+'':
+\begin{itemize}
+\item Log in as ``\verb+root+''.
+\item Type ``\verb+passwd neurocam-admin+'' to reset the account password
+for ``\verb+neurocam-admin+''.
+\item Enter the new password when prompted.
+\end{itemize}
+
+To reset the ``\verb+root+'' password when you \textit{can} log in as
+``\verb+neurocam-admin+'':
+\begin{itemize}
+\item Log in as ``\verb+neurocam-admin+''.
+\item Type ``\verb+sudo bash+'' to get a root shell. Enter the password
+for the ``\verb+neurocam-admin+'' account as the \verb+sudo+ password.
+\item Type ``\verb+passwd+''.
+\item Enter the new password when prompted.
+\item Type ``\verb+exit+'' to leave the root shell.
+\end{itemize}
+
+To reset the ``\verb+neurocam-admin+'' password when you \textit{cannot}
+log into the NeuroCam machine at all, do the following:
+\begin{itemize}
+\item With the machine unpowered, plug in the Mint 18.1 USB stick.
+\item Turn on the machine.
+\item Hit F10 to enter the boot menu.
+\item Select the USB stick from the boot devices, and boot.
+\item (The machine should now show the Linux boot menu.)
+\item From the Linux boot menu, pick ``start in compatibility mode''.
+\item From the GUI, open a terminal window.
+\item Type ``\verb+sudo bash+'' to get a root session.
+\item Type ``\verb+mount -t auto /dev/sda1 /mnt+'' to mount the hard disk
+in the ``\verb+/mnt+'' mount point.
+\item Type ``\verb+chroot /mnt+'' to open a new shell that uses
+``\verb+/mnt+'' as the root folder.
+\item Type ``\verb+passwd neurocam-admin+'' to reset the account password
+for ``\verb+neurocam-admin+''.
+\item Enter the new password when prompted.
+\item Type ``\verb+shutdown -r now+'' to reboot.
+\item Remove the USB stick when the system reboots.
+\end{itemize}
+
+%
+\subsection{Adding a Second Drive}
+
+The instructions above configure a machine to use a single solid--state drive.
+A second drive may be added, and given a single data partition; the two data
+partitions (on the first and second drive) may then be configured as a single
+larger \verb+RAID0+ drive.
+
+\fixme{This hasn't been implemented, so no documentation for it.}
+
+\fixme{Cover ``doing this before install'' and ``modifying a machine after
+install'' separately.}
+
+%
+%
+\section{Making New NeuroCam Install USB Sticks}
+\label{machine-usb}
+
+The NeuroCam install and update software can be added to any USB stick. This
+does not interfere with existing data; the software is placed in a new
+directory called ``\verb+neurocam-install+''.
+
+To add the install and update software to an already-formatted USB stick:
+\begin{itemize}
+\item On a NeuroCam development machine, open a terminal window.
+\item Navigate to the NeuroCam development directory.
+\item Make sure no other USB sticks are in the machine, and insert a USB
+stick to turn into a NeuroCam update USB stick.
+\item Type ``\verb+install/scripts/make-installkey.sh+''.
+\item Wait until the script has finished.
+\item Type ``\verb+umount /media/neurocam-admin/(label)+'' to unmount the
+USB stick for safe removal.
+\par
+This refers to Mint's automatic mount point for the USB stick, with 
+``\verb+(label)+'' replaced with the stick's volume label (or serial number if
+there is no volume label). You can use ``tab completion'' to avoid having to
+type this: if only one USB stick is plugged in,
+``\verb+/media/neurocam-admin/(tab)+'' will automatically expand to the
+correct mount point name when the \verb+tab+ key is pressed.
+\end{itemize}
+
+%
+%
+\section{Making New Linux Mint USB Sticks}
+\label{machine-usbmint}
+
+The Linux Mint install software requires a dedicated USB stick. Adding the
+Linux Mint installer destroys all other contents of the stick.
+
+The version of Linux Mint used by the NeuroCam machines as of this writing
+is 18.1.
+
+To make a Linux Mint USB stick:
+\begin{itemize}
+\item On a Linux machine (such as a NeuroCam development machine), open
+a browser and go to ``\verb+https://www.linuxmint.com+''.
+\item Click on the ``Download'' tab.
+\item Check the version number shown on the download page. If this does not
+match the desired version, click on the ``All versions'' tab, and select the
+desired version.
+\item Select the 64-bit version with your desired desktop. NeuroCam
+development was done using the ``Cinnamon'' desktop, but other desktops
+should work.
+\item Choose a mirror in the appropriate country to download the \verb+.iso+
+image for your selected distribution. This may take some time to download.
+Save this image and make note of its name and where you put it.
+\item Click the terminal icon in the hotbar or start menu to get a terminal
+window.
+\item Type ``\verb+sudo apt-get install unetbootin+'' to make sure the
+boot stick creation application is present. Enter your password when
+prompted.
+\item Type ``\verb+cat /proc/partitions+''. Insert the USB stick, close the
+file browser popup (if any), then type ``\verb+cat /proc/partitions+'' again.
+The newly-added lines indicate the device name of the USB stick (usually
+``\verb+/dev/sdb+'' for the stick itself and ``\verb+/dev/sdb1+'' for the
+data partition on it).
+\item If desired, reformat the USB stick and set a meaningful volume label.
+\par
+To do this manually, ``eject'' (unmount) the USB stick, and type \\
+``\verb+sudo mke2fs -j -m 0 -L (label) /dev/(partition device)+''. \\
+Enter your password when prompted.
+\item Type
+``\verb+unetbootin method=diskimage isofile=(file) installtype=USB+ \\
+\verb+targetdrive=/dev/(partition)+''.
+\item Enter your password when prompted.
+\item The UNetbootin dialog should already have the ``Diskimage'' method
+selected, of type ``ISO'', with the filename filled in. Type should already
+be ``USB Drive'', with target drive set to the partition name on the USB
+stick. Verify this information, and click ``Ok''.
+\item (UNetbootin will copy the install image to the USB drive and install a
+boot loader.)
+\item Click ``Exit'' to exit UNetbootin.
+\item Type ``sync'' to commit all changes to disk.
+\item Eject the USB drive, remove it, and then verify it by attempting to
+boot a test machine using it.
+\end{itemize}
+
+%
+% This is the end of the file.

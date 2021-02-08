@@ -1,0 +1,43 @@
+% Webcam infrared HOWTO - Extracted from the NeuroCam manual.
+% Written by Christopher Thomas.
+% Copyright (c) 2021 by Vanderbilt University. This work is released under
+% the Creative Commons Attribution-ShareAlike 4.0 International License.
+
+\documentclass[letterpaper,11pt]{article}
+\usepackage[letterpaper]{geometry}
+\usepackage{graphicx}
+\usepackage{verbatim}
+
+\geometry{nohead,footskip=0.3in,margin=0.75in}
+
+% Force my paragraph style, darnit.
+\usepackage{indentfirst}
+\setlength{\parskip}{\baselineskip}
+
+% FIXME - Turn sections into subsections and chapters into sections.
+\let\chapter=\section
+\let\section=\subsection
+
+% Document body.
+\begin{document}
+
+%
+% Title and copyright notice.
+%
+\begin{center}
+%
+{\Huge Webcam IR Modification HOWTO} \\
+\vspace*{0.5\baselineskip}
+{\footnotesize Written by Christopher Thomas. \input{boilerplate}}
+%
+\end{center}
+
+%
+% Camera-specific instructions.
+%
+\input{neurocam-manual-aux-c920}
+
+\end{document}
+
+%
+% This is the end of the file.

@@ -1,0 +1,2 @@
+EPS can be converted to DXF by loading into and saving from Inkscape.
+This messes with the scale factor. I think it did 1 pt = 1 mm.

@@ -1,0 +1,279 @@
+% NeuroCam manual - Development Computer
+% Written by Christopher Thomas.
+% Copyright (c) 2021 by Vanderbilt University. This work is released under
+% the Creative Commons Attribution-ShareAlike 4.0 International License.
+
+\chapter{Development Computer}
+\label{devmachine}
+
+The NeuroCam development environment is an x86-architecture computer running
+the Linux Mint operating system, with the NeuroCam software and its required
+support packages installed.
+
+Hardware specifications are not critical, but if more than two cameras are to
+be tested on a development machine, hardware performance comparable to the 
+NeuroCam computer described in Chapter \ref{machine} will be needed.
+
+To build a new NeuroCam development computer, you will need the following:
+\begin{itemize}
+%
+\item A suitable computer.
+\item A USB stick containing the Linux Mint 18.1 installer.
+\item A USB stick containing the NeuroCam installer and the NeuroCam
+development environment.
+%
+\end{itemize}
+
+Making a NeuroCam development environment USB stick is described in Section
+\ref{devmachine-usb}. Making a NeuroCAM install USB stick is described in
+Section \ref{machine-usb}. Both of these may be placed on the same USB stick.
+
+Making a Linux Mint install USB stick is described in Section
+\ref{machine-usbmint}.
+
+%
+%
+\section{First-Time Installation}
+
+This is a variation of the procedure used for NeuroCam computers. There are
+important differences, so be sure to check the steps closely.
+
+\fixme{This uses the NeuroCam computer install scripts, which require the
+username ``neurocam-admin''. Dedicated dev scripts would relax that
+requirement.}
+
+To install Linux and the NeuroCam software (but not the development
+environment):
+\begin{itemize}
+%
+\item Connect the machine to a keyboard, a mouse, and a monitor.
+\item With the machine unpowered, plug in the Mint 18.1 USB stick.
+\item Turn on the machine.
+\item Get to the BIOS menu by holding the appropriate key during boot
+(usually F2).
+\item Turn UEFI off. This may be called ``Windows compatibility''.
+\item Edit the boot order, moving the USB stick to the top.
+\item Hit F10 to save and exit.
+%
+\item (The machine should now show the Linux boot menu.)
+\item From the Linux boot menu, pick ``start in compatibility mode''.
+\item From the GUI, open a terminal window.
+\item Type ``\verb+sudo bash+'' to get a root session.
+\item Type ``\verb+fdisk /dev/sda+'' to partition the drive.
+\item Delete any existing partitions. The normally won't be any.
+\item Create a 50 gigabyte partition (for the OS), an 8 gigabyte partition
+(for swap space), and a third partition (for data).
+\item Set the OS and data partitions to type 83 (Linux; this may be set
+already by default). Set the swap partition to type 82 (Linux swap).
+\item Set the ``bootable'' flag on the OS partition.
+\item Save and exit \verb+fdisk+.
+\item Type ``\verb+mke2fs -j /dev/sda1+'' and
+``\verb+mke2fs -j -m 0 /dev/sda3+'' to create filesystems on the OS and
+data partitions, respectively.
+\item Type ``\verb+mkswap /dev/sda2+'' to initialize the swap partition.
+\item Type ``\verb+exit+'' twice to leave the root shell and the terminal
+window.
+%
+\item Click ``Install Linux Mint''.
+\item Do not set up networks.
+\item Do not install proprietary software.
+\item Select ``Something Else'' for the target partition.
+\item Doubleclick ``\verb+/dev/sda1+'', select ``use as ext3 journaling
+filesystem'', check ``format'', and select mount point ``/''.
+\item Doubleclick ``\verb+/dev/sda2+'', and select ``use as swap area''.
+\item Doubleclick ``\verb+/dev/sda3+'', select ``use as ext3 journaling
+filesystem'', check ``format'', and select mount point ``/data''.
+\item Click ``Install Now''.
+\item Select time zone and keyboard type.
+\item For ``Your Name'', enter ``NeuroCam Developer''. Enter any desired
+name for ``Your Computer's Name'' (allowable characters are lower--case 
+letters, numbers, and hyphen; no whitespace, capitals, or punctuation).
+For ``Pick a User Name'', enter ``\verb+neurocam-admin+''. For the password,
+enter ``\verb+neurocam+''.
+\par
+\textbf{This password is easily guessed, and so should be changed when
+setup is completed.} The procedure for changing passwords is described in
+Section \ref{machine-password}.
+\item Check ``require password to log in''.
+\item Begin the install.
+\item When the installation finishes, click ``restart now''.
+\item Remove the USB stick when the system reboots.
+%
+\item (The system should boot to the Linux Mint login screen.)
+\item Log in as ``\verb+neurocam-admin+'' with the password
+``\verb+neurocam+''.
+\par
+\textbf{NOTE:} If the system does not let you log in with the credentials
+supplied above, see Section \ref{machine-password} for the password reset
+method.
+%
+\item (You should now be logged in as ``\verb+neurocam-admin+'' on a graphical
+desktop.)
+\item Click the terminal icon in the hotbar or start menu to get a terminal
+window with a command shell.
+\item In the terminal window, type ``\verb+sudo bash+'' to get a root shell.
+Enter ``\verb+neurocam+'' as the \verb+sudo+ password.
+\item Type ``\verb+passwd+'' to reset the \verb+root+ account's password.
+Set it to ``\verb+administrator+''.
+\par
+\textbf{This password is easily guessed, and so should be changed when
+setup is completed.} The procedure for changing passwords is described in
+Section \ref{machine-password}.
+\item Type ``\verb+exit+'' to leave the root shell.
+\item Type ``\verb+exit+'' again to leave the command shell, closing the
+terminal window.
+\item Click on the ``log out'' icon in the start menu.
+%
+\item Press \verb+ctrl-alt-F6+ to get to a text console (if using a Mac
+keyboard, \verb+ctrl-option-function-F6+).
+\item Log in as ``\verb+root+'' with the password ``\verb+administrator+''.
+\item Plug the development computer into an internet jack.
+\item Wait 10 seconds.
+\item Type ``\verb+ifconfig+'' to get network interface information. Wired
+ethernet is the entry with a device name starting with ``\verb+e+'' (usually
+``\verb+eth+'', ``\verb+eno+'', ``\verb+enp+'', or similar).
+\item When network handshaking has finished, there will be an
+``\verb+inet addr+'' field with an IP address assigned. This address will
+\textbf{not} start with \verb+127+ (\verb+127.x.x.x+ is the loopback address).
+\item Your institution's network may require network cards' MAC addresses
+to be registered before allowing connections. To find the network card's MAC
+address, look for a field named ``\verb+HWaddr+''. Write this down.
+\item Type ``\verb+ping 8.8.8.8+'' to check internet connectivity. A response
+of ``\verb+64 bytes from 8.8.8.8+'' means that the internet is visible.
+\item Type ``\verb+mkdir /usb+'' to create a manual mount point for the USB
+stick. This only needs to be done once.
+\item Make sure no other USB sticks are in the machine, and insert a
+NeuroCam update USB stick.
+\item Type ``\verb+mount -t auto -o exec /dev/sdb1 /usb+'' to manually mount
+the USB stick and to allow scripts to be run from the stick.
+\item Type ``\verb+/usb/neurocam-install/scripts/do-install.sh+'' to perform
+first-time NeuroCam software installation. This will take a while.
+\par
+\textbf{NOTE:} This should skip most confirmation steps, but may still ask for
+user input. Default settings should always be acceptable.
+\item Once this has finished, type ``\verb+shutdown -r now+'' to reboot.
+\item Remove the USB stick when the system reboots.
+%
+\end{itemize}
+
+To install the development environment:
+\begin{itemize}
+%
+\item Allow the machine to boot to the graphical login screen as normal.
+\par
+(To switch from the text logon screen to the graphical screen, press
+\verb+ctrl-alt-F8+; on a Mac keyboard, \verb+ctrl-option-function-F8+.)
+\item Log in as ``\verb+neurocam-admin+''.
+\item Make sure no other USB sticks are in the machine, and insert a NeuroCam
+development USB stick. Close the file browser popup window, if any.
+\item Click the terminal icon in the hotbar or start menu to get a terminal
+window with a command shell.
+\item Navigate to the directory you wish to use as the development tree root.
+You can create a new directory with ``\verb+mkdir ~/(directory)+'' and move
+to it with ``\verb+cd ~/(directory)+''. Type ``\verb+pwd+'' to check that you
+are in the desired location.
+\item Type ``\verb+tar -xvf /media/neurocam-admin/(label)/neurocam/dev/*.tar+''.
+\par
+This refers Mint's automatic mount point for the USB stick, with 
+``\verb+(label)+'' replaced with the stick's volume label (or serial number if
+there is no volume label). You can use ``tab completion'' to avoid having to
+type this: if only one USB stick is plugged in, 
+``\verb+/media/neurocam-admin/(tab)+'' will automatically expand to the
+correct mount point name when the \verb+tab+ key is pressed.
+\item When the ``\verb+tar+'' command has finished extracting files, type
+``\verb+ls+'' to check that the development tree's subdirectories are in 
+place.
+\item Type ``\verb+umount /media/neurocam-admin/(label)+'' to unmount the
+USB stick for safe removal.
+%
+\end{itemize}
+
+%
+%
+\section{Updating the Development Machine}
+
+Linux will usually update itself automatically, but doing this manually is
+also acceptable. The NeuroCam software and the NeuroCam development code
+will have to be updated manually.
+
+Updating Linux Mint requires an internet connection. Updating the NeuroCam
+software and development code do not.
+
+To update Linux Mint:
+\begin{itemize}
+%
+\item (Turn on the machine and allow it to boot per normal.)
+\item Press \verb+ctrl-alt-F6+ to get to a text console.
+\item Log in as ``\verb+root+''.
+\item Type ``\verb+ping 8.8.8.8+'' to check internet connectivity. A response
+of ``\verb+64 bytes from 8.8.8.8+'' means that the internet is visible.
+\item Type ``\verb+~/neurocam-scripts/do-mintupdate.sh+''. This may take a
+while, depending on how many packages need to be updated.
+\par
+\textbf{NOTE:} This should skip most confirmation steps, but may still ask for
+user input. Default settings should always be acceptable.
+\item Type ``\verb+exit+'' to log out.
+\item Press \verb+ctrl-alt-F8+ to return to the graphical login screen.
+\end{itemize}
+
+To update the NeuroCam software:
+\begin{itemize}
+%
+\item (Turn on the machine and allow it to boot per normal.)
+\item Press \verb+ctrl-alt-F6+ to get to a text console.
+\item Log in as ``\verb+root+''.
+\item Make sure no other USB sticks are in the machine, and insert a
+NeuroCam update USB stick.
+\item Wait five seconds, then type ``\verb+mount /usb+''.
+\item Type ``\verb+~/neurocam-scripts/do-update.sh+''.
+\item Once this has finished, type ``\verb+shutdown -r now+'' to reboot.
+This will force a full restart of the NeuroCam software.
+\item Remove the USB stick when the system reboots.
+%
+\end{itemize}
+
+To update the NeuroCam development environment:
+\begin{itemize}
+\item (Turn on the machine and allow it to boot to the graphical login
+screen as normal.)
+\item Log in as ``\verb+neurocam-admin+''.
+\item Make sure no other USB sticks are in the machine, and insert a NeuroCam
+development USB stick. Close the file browser popup window, if any.
+\item Click the terminal icon in the hotbar or start menu to get a terminal
+window with a command shell.
+\item Navigate to the directory you use as the development tree root.
+Type ``\verb+pwd+'' to check that you are in the desired location.
+\item \textbf{Make sure that you have backed up any changed files.}
+Reinstalling the development tree will overwrite any existing files that are
+present.
+\item Type ``\verb+tar -xvf /media/neurocam-admin/(label)/neurocam/dev/*.tar+''.
+\item When the ``\verb+tar+'' command has finished extracting files, type
+``\verb+ls+'' to check that the development tree's subdirectories are in 
+place.
+\item Type ``\verb+umount /media/neurocam-admin/(label)+'' to unmount the
+USB stick for safe removal.
+\end{itemize}
+
+%
+%
+\section{Making New Development USB Sticks}
+\label{devmachine-usb}
+
+The NeuroCam development environment can be added to any USB stick. This
+does not interfere with existing data; the software is placed in a new
+directory called ``\verb+neurocam-dev+''.
+
+To add the install and update software to an already-formatted USB stick:
+\begin{itemize}
+\item On a NeuroCam development machine, open a terminal window.
+\item Navigate to the NeuroCam development directory.
+\item Make sure no other USB sticks are in the machine, and insert a USB
+stick to turn into a NeuroCam update USB stick.
+\item Type ``\verb+install/scripts/make-devkey.sh+''.
+\item Wait until the script has finished.
+\item Type ``\verb+umount /media/neurocam-admin/(label)+'' to unmount the
+USB stick for safe removal.
+\end{itemize}
+
+%
+% This is the end of the file.

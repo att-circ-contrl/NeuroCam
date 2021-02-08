@@ -1,0 +1,83 @@
+% NeuroCam manual - User guide subset - Top level
+% Written by Christopher Thomas.
+% Copyright (c) 2021 by Vanderbilt University. This work is released under
+% the Creative Commons Attribution-ShareAlike 4.0 International License.
+
+\documentclass[letterpaper,11pt]{report}
+\usepackage[letterpaper]{geometry}
+\usepackage{graphicx}
+\usepackage{verbatim}
+
+\geometry{nohead,footskip=0.3in,margin=0.75in}
+
+% Force my paragraph style, darnit.
+\usepackage{indentfirst}
+\setlength{\parskip}{\baselineskip}
+
+% Custom macros.
+\newcommand{\fixme}[1]{\textbf{FIXME: #1}}
+
+% Document body.
+\begin{document}
+
+% Title page.
+
+\pagestyle{empty}
+
+\begin{center}
+%
+\vspace*{1.5in}
+{\Huge NeuroCam System User Guide} \\
+{\footnotesize Written by Christopher Thomas -- \today.} \\
+%
+\vspace*{1in}
+\includegraphics[width=0.9\textwidth]{pics-system/sys-all-d.jpg} \\
+%
+\vfill
+{\footnotesize \input{boilerplate}}
+%
+\end{center}
+%
+\clearpage
+%
+\pagestyle{plain}
+\pagenumbering{roman}
+\setcounter{page}{1}
+%
+\tableofcontents
+%
+\clearpage
+\pagestyle{plain}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+% NOTE - "\thispagestyle" is used for part and chapter beginning pages,
+% and overrides \pagestyle.
+% Redefine it to be harmless.
+% NOTE - The canonical solution ("\pagenumbering{gobble}") resets the page
+% counter whenever it's used.
+\renewcommand{\thispagestyle}[1]{}
+
+% Part 1: User guide.
+\iffalse
+%
+\clearpage
+\pagestyle{empty}
+\part{Using the NeuroCam System}
+\pagestyle{plain}
+%
+\fi
+
+\input{neurocam-manual-user-intro}
+\input{neurocam-manual-user-setup}
+\input{neurocam-manual-user-gui}
+\input{neurocam-manual-user-repo}
+\input{neurocam-manual-user-handshake}
+
+% FIXME - We need the router information too.
+% This is normally in the maintenance section.
+\input{neurocam-manual-maint-router}
+
+\end{document}
+
+%
+% This is the end of the file.

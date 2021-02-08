@@ -15,6 +15,9 @@ installkey:
 	install-scripts/make-installkey.sh
 
 manual:
+	rm -f manuals/*pdf
+	make -C manuals-src clean all
+	mv manuals-src/*pdf manuals
 
 blinkbox-hex:
 
