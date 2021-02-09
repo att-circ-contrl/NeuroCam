@@ -17,7 +17,28 @@ released under the Creative Commons Attribution-ShareAlike 4.0 International
 License.
 
 
-## Use
+## Quick-Start
+
+The top-level Makefile automates common operations (under Ubuntu-derived
+Linux, at least):
+
+* Type "`make`" without arguments for the Makefile target list.
+
+* To make a NeuroCam software install/update USB stick, put a USB stick in
+your machine and type "`make installkey`".
+
+* To rebuild the manuals (which should already be in the "`manuals`" folder),
+type "`make manual`".
+
+* To build the firmware for the "Blink Box" GPIO device, make sure
+the "NeurAVR" project is installed and "`neuravr`" is symlinked at an
+appropriate location, and type "`make blinkbox-hex`".
+
+* To flash a "Blink Box" GPIO device after the firmware hex file is built,
+plug the device into your computer and type "`make blinkbox-burn`".
+
+
+## Relevant Components
 
 The following hardware and software components are provided:
 
@@ -52,6 +73,8 @@ update their software.
 packets and listening for UDP broadcasts. These are used for low-level
 communication with the NeuroCam daemon for debugging purposes.
 
+
+## Idiosyncracies
 
 The following idiosyncracies are present (due to the "written in a hurry and
 not re-factored" aspect mentioned in the previous section):
