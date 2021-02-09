@@ -118,10 +118,8 @@ This repository contains the following directories:
 * `install-scripts` -- Scripts for building install/update USB sticks.
 * `manuals` -- NeuroCam documentation.
 * `manuals-src` -- Source for rebuilding NeuroCam documentation.
-* `gpio-code` -- Source for the "Blink Box" GPIO device's firmware.
-* `gpio-pcb` -- PCB development files for the "Blink Box" GPIO device.
-* `gpio-headers` -- Pin assignments for the "Blink Box" GPIO device's
-internal headers.
+* `gpio` -- Firmware source and PCB development files for the "Blink Box"
+GPIO device.
 * `drawings` - Mechanical drawings (for the GPIO device).
 * `schematics` - Schematics (for the GPIO device and lamp driver).
 * `notes` -- Miscellaneous notes relevant to NeuroCam development.
