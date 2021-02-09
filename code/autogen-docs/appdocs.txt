@@ -1,0 +1,589 @@
+(script)  fakeunity.pl
+
+NeuroCam suite - Fake Unity machine.
+Written by Christopher Thomas.
+
+
+
+(var)  $screenfps, $imagefps
+
+Private Constants
+
+
+
+(sub)  PrintHelp
+Displays a help screen.
+No arguments.
+No return value.
+
+
+(sub)  ProcessArgs
+Reads command-line arguments, returning an options/config hash.
+No arguments.
+Returns a pointer to the options hash, or undef on error.
+
+
+(sub)  FormatNetworkDebugInfo
+Produces a human-readable dump of network debugging information.
+Arg 0 points to the network information hash.
+Returns a multi-line string.
+
+
+(sub)  TransmitSourceList
+Transmits a list of source streams offered.
+Arg 0 is the target IP address.
+Arg 1 is the target port.
+Arg 2 is 1 if a video stream exists, 0 otherwise.
+Arg 3 points to the options hash.
+No return value.
+
+
+(sub)  ForkScreencast
+Forks a process that starts a screencast.
+Arg 0 points to the options hash.
+Returns a list of child PIDs.
+
+
+(sub)  ForkImagecast
+Forks a process that starts an imagecast.
+Arg 0 is the directory to look for jpeg images in.
+Arg 1 points to the options hash.
+Returns a list of child PIDs.
+
+(script)  neurocam-cgi.pl
+
+NeuroCam management script - CGI invocation UI.
+Written by Christopher Thomas.
+
+
+
+(var)  $tempconfigfile
+Scratch file for passing configuration information to the daemon.
+
+
+(var)  $lastconfigfile
+Scratch file for storing the most recent configuration.
+On one hand, this should persist, and /tmp will wipe it on reboot.
+On the other hand, camera IDs will be scrambled on reboot, so that's fine.
+
+
+(var)  $auxpathunix, $auxpathweb
+Filesystem and HTTP paths to the auxiliary files directory.
+
+
+(var)  %feednamelut
+Lookup table of button-name feed labels to folder names.
+
+
+(sub)  ProbeDevices
+Probes cameras and network devices.
+NOTE - This takes nonzero time.
+No arguments.
+Returns ($cameras_p, $netdevs_p).
+
+
+(sub)  LoadOrCreateSessionConfig
+Attempts to load the most recently used copy of the session config.
+Failing that, it probes devices and creates one, saving it to disk.
+Arg 0 is the filename expected to contain the session config.
+Returns a pointer to a valid configuration hash.
+
+
+(sub)  SetAllCameras
+Sets all cameras to the specified resolution and frame rate.
+Modifies the provided session config hash.
+Arg 0 is the configuration file to alter.
+Arg 1 is the desired resolution.
+Arg 2 is the desired frame rate.
+Arg 3 is the desired exposure.
+No return value.
+
+
+(sub)  KillAllNeurocamProcesses
+This kills the NeuroCam manager and daemon, if active, and all sub-threads.
+FIXME - Killing the GPIO widget will leave filehandles in limbo. Devices
+may need to be re-plugged.
+There's no way around this, as the manager kills it itself if we don't.
+This just cleans up zombies.
+
+
+(sub)  StopNicelyThenKill
+This asks NeuroCam processes nicely to stop, waits a moment, then
+kills everything.
+NOTE - This takes several seconds.
+No arguments.
+No return value.
+
+(script)  neurocam-cli.pl
+
+NeuroCam management script - Command-line invocation UI.
+Written by Christopher Thomas.
+
+
+
+(sub)  PrintListOfModes
+Displays a list of resolutions and frame rates.
+Arg 0 points to the resolution/rate hash.
+No return value.
+
+
+(sub)  PrintListOfExposures
+Displays a list of exposures hashed by resolutions and frame rates.
+Arg 0 points to the resolution/rate hash.
+No return value.
+
+
+(sub)  PrintCameraMetadata
+Displays metadata information about one camera.
+Argument 0 points to the camera's metadata hash.
+No return value.
+
+
+(sub)  PrintCameraList
+Displays metadata information about all cameras.
+Argument 0 points to the hash of camera metadata hashes.
+No return value.
+
+
+(sub)  ProbeCameraModes
+Probes for a list of well-behaved resolutions/frame rates for a camera.
+This is added to the camera's metadata hash.
+Arg 0 points to the camera's metadata hash.
+No return value.
+
+
+(sub)  ProbeCameraExposures
+Probes exposures for each supported mode for a camera, to determine the
+maximum well-behaved exposure setting.
+This is added to the camera's metadata hash.
+Arg 0 points to the camera's metadata hash.
+No return value.
+
+
+(sub)  ProbeCameraFocus
+Sweeps the focus range for the desired mode for a camera, to determine
+which focus value gives the sharpest results.
+This is added to the camera's metadata hash.
+Arg 0 points to the camera's metadata hash.
+Arg 1 is a filename to write probe gnuplot data to (may be undef).
+No return value.
+
+
+(sub)  PrintSessionConfig
+Writes session configuration information to stdout.
+Arg 0 points to the session configuration hash.
+No return value.
+
+
+(sub)  ProcessArgs
+Processes command-line arguments.
+No arguments.
+Returns a hash of option-flags and other argument data, or undef on error.
+
+
+(sub)  PrintHelp
+Displays a help screen.
+No arguments.
+No return value.
+
+(script)  neurocam-daemon.pl
+
+NeuroCam management script - Data acquisition daemon.
+Written by Christopher Thomas.
+
+
+
+(var)  $monitordir
+
+Private Constants
+
+
+
+(var)  $tattlecomm, $tattleframes
+
+
+(var)  $stitchernicelevel
+
+
+(var)  $monitor_report_port
+Monitor frame reporting port.
+FIXME - Hardcode a port number. Order of events makes it hard to
+automatically assign one!
+
+
+(var)  $video_frame_scout_lookahead
+Lookahead for scouting for new frames.
+Each file tests generates a fstat() call, so they're not free.
+That said, there _should_ only be one or two of these, unless a glitch
+has occurred. Expensive glitch recovery is acceptable.
+
+
+(sub)  CreateRepository
+Creates a repository structure in the specified directory.
+The directory is created if necessary.
+Arg 0 is the repository directory.
+Arg 1 points to the session configuration.
+Returns a hash of paths or undef on error.
+(This contains slot+monitor dirs, logfile, metafile, sessionfile.)
+
+
+(sub)  MakeNewVideoTracker
+Creates a new video frame tracker widget.
+FIXME - This would be cleaner if object-oriented.
+No arguments.
+Returns a pointer to the tracker's handle.
+
+
+(sub)  TrackVideoUpdate
+Probes for the existence of new frames for a given stream.
+Arg 0 points to the video frame tracker handle.
+Arg 1 is the name of the directory to check for frames.
+Returns (frame number, filename) if successful, and (undef, undef) if not.
+The filename returned does _not_ include the path.
+
+
+(sub)  DoLogger
+This sets up the log file and writes data to it.
+This idles when it sees a "stop" command, but never terminates.
+Arg 0 points to the session hash.
+Arg 1 points to the path lookup hash.
+Arg 2 is the filehandle to listen to for events.
+No return value.
+
+
+(sub)  DoStitcher
+This assembles monitor frames, saves them, and hands them off to be
+streamed.
+Arg 0 points to the session hash.
+Arg 1 points to the path lookup hash.
+Arg 2 is the filehandle to listen to for stitch commands.
+Arg 3 is the filehandle to send frame filenames to imagecast.
+Arg 4 is the UDP port to report frame events to.
+No return value.
+
+
+(sub)  DoListener
+This sets up UDP listener sockets and listens for events.
+This idles when it sees a "stop" command, but never terminates.
+Arg 0 points to the session hash.
+Arg 1 points to the path lookup hash.
+Arg 2 is the filehandle to send logger events to.
+Arg 3 is the filehandle to send master events to.
+Arg 4 is the filehandle to send stitcher events to.
+Arg 5 is the port to listen for monitor frame transmissions on.
+No return value.
+
+
+(sub)  StartCameraThread
+Starts a camera capture thread.
+Arg 0 points to the configuration information for the camera.
+Arg 1 is the path to store image frames in.
+Returns the child PID, or undef on error.
+
+
+(sub)  StartStreamThread
+Starts a stream capture thread.
+Arg 0 points to the configuration information for the stream.
+Arg 1 is the path to store image frames in.
+Returns the child PID, or undef on error.
+
+
+(sub)  DoDaemon
+This sets up files and pipes and starts daemon processes to handle
+listening, logging, and serving the monitor stream.
+When a shutdown command occurs, this also cleans up threads and closes
+files and sockets.
+Arg 0 points to the session hash.
+Arg 1 points to the path lookup hash.
+No return value.
+
+
+(sub)  ProcessArgs
+Parses command-line arguments.
+No arguments.
+Returns an options hash.
+
+
+(sub)  PrintHelp
+Displays a help screen.
+No arguments.
+No return value.
+
+(script)  neurocam-gpio.pl
+
+NeuroCam management script - GPIO monitoring script.
+Written by Christopher Thomas.
+
+This looks for USB serial ports (continually checking for new ones),
+probes to see if they contain GPIO devices, and listens to any GPIO
+devices, relaying messages to the camera daemon and start/stop signals
+to the manager as appropriate.
+
+
+
+(var)  @probebauds
+Baud rates to probe, in order.
+
+
+(var)  $cmdmask_start, $cmdmask_stop
+Bitmasks for "start recording" and "stop recording" control lines.
+
+
+(var)  $cmddeadtime
+Dead time between successive commands, in milliseconds.
+
+
+(var)  $use_alt_serial
+FIXME - Allow use of "picocom" instead of "cu".
+"cu" tries to use CTS/RTS, which the Nano's FTDI doesn't offer, I think.
+Whatever the reason, transmitting _to_ the Nano fails.
+
+
+(var)  $debug_device_detect
+Show device detection handshaking.
+
+
+(var)  $debug_tattle_banners
+Progress and data tattling flags.
+
+
+(var)  $debug_tattle_data
+
+
+(var)  $debug_tattle_messages
+Main loop tattling.
+
+
+(var)  $netinfo_p, $hostip
+Networking information.
+
+
+(var)  $parentport
+Port the parent thread is listening on.
+
+
+(sub)  OpenSerialPort
+Attempts to connect to a tty device using the specified baud rate.
+Arg 0 is the device to connect to.
+Arg 1 is the baud rate to use.
+Returns (pid, readhandle, writehandle).
+
+
+(sub)  ScheduleKillAbs
+Waits for the specified length of time and then kills the specified process.
+This is intended as a failsafe for processes whose I/O hangs.
+Arg 0 is the pid to kill.
+Arg 1 is the absolute time at which to perform the kill.
+
+
+(sub)  MakePrintableString
+Returns a version of a string that translates nonprintable characters
+into "<xx>" strings.
+Arg 0 is the string to convert.
+Returns the converted string.
+
+
+(sub)  MonitorGPIODevice
+Monitors a GPIO device, sending messages to the camera and management
+daemons.
+Arg 0 is the read handle.
+Arg 1 is the write handle.
+Arg 2 is the label to give this device when reporting.
+Arg 3 is the full device identity string.
+No return value.
+
+
+(sub)  ProbePort
+Probes a USB serial port, checking to see if it has a device we want to
+talk to. If so, a handler thread is spun off.
+Arg 0 is the device filename.
+Returns (childpid, ttypid, baud, id string) on success, or undef on error.
+
+
+(sub)  DoSerialProbeLoop
+Spins until killed, updating the list of serial ports and probing new ports.
+NOTE - This creates sockets (for itself and for child threads).
+This spawns child threads and reports them to the master.
+No arguments.
+No return value (does not return).
+
+(script)  neurocam-manager.pl
+
+NeuroCam management script - Manager daemon.
+Written by Christopher Thomas.
+
+
+
+(var)  $laststartcmd
+Debugging records.
+
+
+(var)  $netinfo_p
+Network information.
+
+
+(sub)  DoLaunchGPIO
+Launches the GPIO monitoring daemon if it isn't already running.
+NOTE - This creates and then destroys a couple of sockets, changing
+the next available port number.
+Returns the pid of the GPIO monitor, or undef if it was already running.
+
+
+(sub)  DoStartCameras
+Starts the camera capture daemon.
+Arg 0 is the repository directory (base plus folder).
+Arg 1 is the configuration file to load.
+No return value.
+
+
+(sub)  DoStopCameras
+Shuts down the camera capture daemon.
+Arg 0 is the transmit socket handle to use.
+No return value.
+
+
+(sub)  DoSelectFeed
+Selects a new monitor feed.
+Arg 0 is the transmit socket handle to use.
+Arg 1 is the name of the feed to use (a folder name or "Monitor").
+No return value.
+
+
+(sub)  DoSynchTimestamps
+Aligns timestamps to strobe flashes.
+This is non-blocking (forking a child process).
+Arg 0 is the repository directory path.
+Arg 1 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoMakeComposite
+Assembles composite stream frames from slot streams.
+This is non-blocking (forking a child process).
+Arg 0 is the repository directory path.
+Arg 1 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoTranscodeFrameset
+Transcodes a series of frames into a movie.
+This is non-blocking (forking a child process).
+Arg 0 is the repository directory path.
+Arg 1 is the name of the subdirectory containing images.
+Arg 2 is the base name of the output file to create.
+Arg 3 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoArchiveTree
+Archives a directory tree into a single downloadable file.
+This is intended to provide a convenient way to move repositories over
+http.
+This is non-blocking (forking a child process).
+Arg 0 is the root directory of the tree to archive.
+Arg 1 is the base name of the output file to create.
+Arg 2 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoCalculateMetadata
+Recalculates metadata for all folders within a repository root directory.
+This is non-blocking (forking a child process).
+Arg 0 is the root directory containing repository folders.
+Arg 1 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoDeletePostfiles
+Removes post-processing files from a repository.
+This should be done before re-processing or after cancelling.
+This is non-blocking; it could take a while, due to file count/size.
+Arg 0 is the repository directory path.
+Arg 1 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoRemoveRepository
+Deletes a session's repository folder (along with any archive tarball).
+This is non-blocking; it could take a while, due to file count/size.
+Arg 0 is the repository directory path.
+Arg 1 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoCopyRepository
+Copyies a session's repository folder from one location to another.
+This is intended to allow transfer of a repository to a USB drive.
+This is non-blocking; it could take a while, due to file count/size.
+Arg 0 is the source tree's root directory.
+Arg 1 is the new root directory to create.
+Arg 2 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoDiskSynch
+Forces a disk synch.
+This is non-blocking; it could take a while for slow USB drives.
+Arg 0 is a socket handle to send the "finished" message with.
+Returns the child thread PID.
+
+
+(sub)  DoGenerateSnapshots
+Polls cameras and streams, getting snapshot images for thumbnails and for
+the preview of the monitor pane.
+Arg 0 is the config filename to read.
+Arg 1 is a directory to store the resulting images in.
+Arg 2 is a socket handle to send the "finished" message with.
+Returns the child thread pid.
+
+
+(sub)  DoAutoAdjustCameras
+Adjusts resolution, frame rate, and exposure time of all cameras.
+Exposure is adjusted until the desired frame rate is met; if that can't
+be done, the frame rate is dropped until it can be.
+Arg 0 is the config filename to read.
+Arg 1 is the desired resolution.
+Arg 2 is the desired frame rate.
+Arg 3 is a socket handle to send the "finished" message with.
+Returns the child thread pid.
+
+(script)  neurocam-postprocess.pl
+
+NeuroCam management script - Command-line post-processing tool.
+Written by Christopher Thomas.
+
+Usage:
+
+neurocam-postprocess.pl  timing (repository directory) (port)
+neurocam-postprocess.pl  composite (repository directory) (port)
+neurocam-postprocess.pl  transcode (repository) (image subdir) (port)
+neurocam-postprocess.pl  metadata (repository directory) (port)
+
+Valid operations are:
+
+timing  - Synchronize image streams to a strobe signal.
+This creates 'logfile-timed.txt'.
+
+composite  - Build a stitched image stream with timestamps in "/Composite".
+This uses 'logfile-timed.txt' over 'logfile.txt' if possible.
+
+transcode  - Assemble a set of frames into a video stream.
+This reads from (repository)/(subdir), and assembles
+(subdir).mp4.
+
+metadata  - Rebuilds metadata for a root repository.
+This creates 'metadata.txt' in the root directory.
+
+Progress strings are sent to the specified port via UDP.
+These have the string "progress " as a prefix.
+
+
+
+(var)  $operation, $repodir
+
+Main Program
+
+
+
+(var)  $port, $slotname
+

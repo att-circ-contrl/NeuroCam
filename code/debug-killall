@@ -1,0 +1,19 @@
+#!/bin/sh
+# This asks everything that might be listening to shut down, and then kills
+# it if it's still alive.
+
+./debug-closeall
+
+sleep 2
+
+killall fakeunity.pl
+killall neurocam-gpio.pl
+killall neurocam-daemon.pl
+killall neurocam-manager.pl
+
+sleep 1
+
+killall -9 fakeunity.pl
+killall -9 neurocam-gpio.pl
+killall -9 neurocam-daemon.pl
+killall -9 neurocam-manager.pl

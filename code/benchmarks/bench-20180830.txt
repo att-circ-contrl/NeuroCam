@@ -1,0 +1,4 @@
+Per previous notes, nominal post-processing rate is 3 GB/hour.
+
+Per notes from July after the external drive fix, nominal external drive 
+transfer rate is about 80 GB/hour.

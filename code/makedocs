@@ -1,0 +1,4 @@
+#!/bin/bash
+rm -f autogendocs/*.txt
+./document-perl.pl neurocam-lib*>autogen-docs/libdocs.txt
+./document-perl.pl fakeunity.pl neurocam-[cdgmps]*.pl>autogen-docs/appdocs.txt

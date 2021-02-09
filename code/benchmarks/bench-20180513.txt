@@ -1,0 +1,13 @@
+Processing a 7.9 gigabyte folder:
+
+- 18 minutes aligning timestamps.
+- 103 minutes compositing.
+- 20 minutes resizing monitor stream.
+- 13 minutes transcoding to make movies.
+
+Net result: 19 minutes per gigabyte / 3 gigabytes per hour.
+
+...I should really write a custom libjpeg program to do the compositing and
+resizing.
+
+(I'm pretty sure compositing _is_ multithreaded, but doublecheck that too.)

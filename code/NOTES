@@ -1,0 +1,2 @@
+This works with 64-bit Perl. Timestamps will be corrupted with 32-bit.
+Use "use bigint" to sidestep that if using 32-bit (taking a speed penalty).

@@ -1,0 +1,6 @@
+#!/bin/sh
+# This tells everything that might be listening to shut down.
+../utils/udpxmit.pl localhost 8888 "shutdown"
+../utils/udpxmit.pl localhost 14000 "shutdown"
+../utils/udpxmit.pl localhost 10999 "shutdown"
+../utils/udpxmit.pl localhost 9999 "CMD stop"

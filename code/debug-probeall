@@ -1,0 +1,9 @@
+#!/bin/sh
+# This pings all of the command/monitor ports that might respond, asking
+# for status queries to be sent to port 7777.
+# NOTE - We don't start a listener on that port! That's the caller's job.
+../utils/udpxmit.pl localhost 8888 "looking for sources reply to port 7777"
+../utils/udpxmit.pl localhost 14000 "looking for sources reply to port 7777"
+../utils/udpxmit.pl localhost 10999 "what is your status reply to port 7777"
+# Ask the manager for debug information too.
+#../utils/udpxmit.pl localhost 10999 "debug report to port 7777"
