@@ -38,7 +38,12 @@ LFLAGS=-lneur-m328p
 #
 # Targets.
 
-default: clean hex
+default: helpscreen
+
+helpscreen:
+	@echo ""
+	@echo "Targets:   clean  hex  burnisp  burnard  test"
+	@echo ""
 
 elf: $(BIN).elf
 hex: $(BIN).hex
@@ -58,8 +63,17 @@ $(BIN).elf: $(SRCS) $(HDRS)
 $(BIN).asm: $(BIN).elf
 	avr-objdump -d $(BIN).elf > $(BIN).asm
 
-burn: $(BIN).hex
+# This looks for an Atmel AVR ISP Mk 2.
+burnisp: $(BIN).hex
 	avrdude -c avrispv2 -P usb -p m328p -U flash:w:$(BIN).hex
+
+# This looks for a boot loader (pretending to be a stk500).
+# FIXME - This blithely assumes we're on the first USB serial device and
+# are using Linux Mint 18's naming conventions.
+# NOTE - We need "-D" to cancel flash erase, as the boot loader refuses to
+# erase itself.
+burnard: $(BIN).hex
+	avrdude -c stk500 -P /dev/ttyACM0 -p m328p -D -U flash:w:$(BIN).hex
 
 # FIXME - Setting the lock bits requires performing a chip erase!
 # FIXME - Fuse settings are 2.7v brownout (needed for EEPROM),

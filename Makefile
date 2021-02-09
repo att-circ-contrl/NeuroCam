@@ -20,8 +20,10 @@ manual:
 	mv manuals-src/*pdf manuals
 
 blinkbox-hex:
+	make -C gpio/code -f Makefile.neuravr clean hex
 
 blinkbox-burn:
+	make -C gpio/code -f Makefile.neuravr burnard
 
 #
 # This is the end of the file.
