@@ -1,0 +1,97 @@
+# Attention Circuits Control Laboratory - GPIO device
+# Makefile.
+# Written by Christopher Thomas.
+
+#
+# Configuration.
+
+# Source files.
+
+HDRS=	\
+	ncam_gpio_config.h	\
+	ncam_gpio_dio.h		\
+	ncam_gpio_host.h	\
+	ncam_gpio_includes.h	\
+	ncam_gpio_task.h	\
+	ncam_gpio_timer.h
+
+SRCS=	\
+	ncam_gpio.cpp		\
+	ncam_gpio_dio.cpp	\
+	ncam_gpio_host.cpp	\
+	ncam_gpio_task.cpp	\
+	ncam_gpio_timer.cpp
+
+# Target name.
+BIN=ncam_gpio
+
+
+# Compiler flags.
+CFLAGS=-Os -fno-exceptions	\
+	-Ineuravr/include -Lneuravr/lib	\
+	-D__AVR_ATmega328P__ -mmcu=atmega328p
+
+# Linking has to be done after compiling, so this is a separate variable.
+LFLAGS=-lneur-m328p
+
+
+#
+# Targets.
+
+default: clean hex
+
+elf: $(BIN).elf
+hex: $(BIN).hex
+asm: $(BIN).asm
+
+clean:
+	rm -f $(BIN).elf
+	rm -f $(BIN).hex
+	rm -f $(BIN).asm
+
+$(BIN).hex: $(BIN).elf
+	avr-objcopy -j .text -j .data -O ihex $(BIN).elf $(BIN).hex
+
+$(BIN).elf: $(SRCS) $(HDRS)
+	avr-gcc $(CFLAGS) -o $(BIN).elf $(SRCS) $(LFLAGS)
+
+$(BIN).asm: $(BIN).elf
+	avr-objdump -d $(BIN).elf > $(BIN).asm
+
+burn: $(BIN).hex
+	avrdude -c avrispv2 -P usb -p m328p -U flash:w:$(BIN).hex
+
+# FIXME - Setting the lock bits requires performing a chip erase!
+# FIXME - Fuse settings are 2.7v brownout (needed for EEPROM),
+# minimum boot loader size, boot from 0x0000 (not the boot loader),
+# keep EEPROM during chip erase, external crystal, full swing, max
+# startup delay, everything unlocked.
+# FIXME - These are not Arduino-safe settings.
+# NOTE - Only the least significant 3 bits of efuse are valid. The rest are 1.
+fuses:
+	avrdude -c avrispv2 -P usb -p m328p -B 20 -e -u -U lock:w:0x3f:m
+	avrdude -c avrispv2 -P usb -p m328p -B 20 -u -U efuse:w:0x05:m
+	avrdude -c avrispv2 -P usb -p m328p -B 20 -u -U hfuse:w:0xd7:m
+	avrdude -c avrispv2 -P usb -p m328p -B 20 -u -U lfuse:w:0xf7:m
+	avrdude -c avrispv2 -P usb -p m328p -B 1 -u -U lock:w:0x3f:m
+
+# FIXME - Nominally arduino-stock, but difficult to test.
+# These were snooped from an Arduino Uno with a new (ATmega32U4) serial
+# translator.
+# NOTE - Only the least significant 3 bits of efuse are valid. The rest are 1.
+# 0x05 read means 0xfd written.
+ardfuses:
+	avrdude -c avrispv2 -P usb -p m328p -B 20 -e -u -U lock:w:0x0f:m
+	avrdude -c avrispv2 -P usb -p m328p -B 20 -u -U efuse:w:0x05:m
+	avrdude -c avrispv2 -P usb -p m328p -B 20 -u -U hfuse:w:0xd6:m
+	avrdude -c avrispv2 -P usb -p m328p -B 20 -u -U lfuse:w:0xff:m
+	avrdude -c avrispv2 -P usb -p m328p -B 1 -u -U lock:w:0x0f:m
+
+# Using "cu -h" for manual echo.
+# FIXME - With the Nano, this is /dev/ttyUSB0, not ACM0.
+test:
+	cu -h -l /dev/ttyACM0 -s 115200
+
+
+#
+# This is the end of the file.

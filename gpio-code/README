@@ -1,0 +1,92 @@
+To use the NeurAVR firmware libraries in a project:
+
+- Add "-I(path to the /include directory) -L(path to the /lib directory)"
+  to the project's gcc flags.
+
+  NOTE - The Makefile is set up to look for "neuravr/include" and
+  "neuravr/lib" in the current directory. Provide a "neuravr" symlink and
+  it should work.
+  
+- Add the architecture-specific "-D__AVR_ATmegaXXXX__" and "-mmcu=atmegaXXXX"
+  to the project's gcc flags.
+
+- Add "-fno-exceptions" to the project's gcc flags (or provide an exception
+  handler).
+
+- Add "#include "neuravr.h"" to the project's master header file. This will
+  include the most important basic AVR headers automatically, in addition to
+  the firmware headers.
+
+- When linking, remember to link libraries in reverse-#include order
+  (everything that uses a library must be linked before that library is).
+  A library fills in all references to its symbols at the time it's
+  linked, so references created afterwards won't be filled in.
+
+
+
+- When burning using the in-system programmer:
+
+  avrdude -c avrispv2 -P usb -p (chip) -U flash:w:(hex file):i
+
+- When burning using the bootloader:
+
+  avrdude -c (burner) -p (chip) -P /dev/ttyACM(number) -U flash:w:(hex file):i
+  (The -D flag may also be needed if flash-erase fails; this is common,
+   because the boot loader doesn't allow unrestricted access.)
+
+  For the Mega and Uno (based on the ATmega2560 and ATmega328P), use:
+  -c stk500 -p m2560 or -p m328p
+
+  For the Micro and Leonardo (based on the ATmega32U4), use:
+  -c avr109 -p m32u4
+
+  The Micro and Leonardo require a connection at 1200 baud to be made and
+then released in order to trigger the bootloader. A sample script that does
+this is:
+
+  echo "reset"|cu -l /dev/ttyACM(number) -s 1200 &
+  sleep 1
+  killall -9 cu
+
+  Newer versions of the Mega and Uno that use a 32u4 chip instead of an FTDI
+chip might require this and might require protocols other than "stk500".
+Consult the web to find out if this becomes relevant.
+
+- To query lock bits and fuse bits (you'll need an ISP):
+
+  avrdude -c avrispv2 -P usb -p (chip) -n -U lock:r:(file to write to)
+  (and similarly with efuse, hfuse, and lfuse)
+
+- To write lock bits and fuse bits (you'll need an ISP):
+
+  avrdude -c avrispv2 -P usb -p (chip) -B 20 -u -U lock:w:0x(hex digits):m
+  (and similarly with efuse, hfuse, and lfuse)
+
+  Then restore the faster clock speed by re-burning any lock or fuse bits:
+  avrdude -c avrispv2 -P usb -p (chip) -B 1 -u -U lock:w:0x(hex digits):m
+
+  ("-B 20" sets 20 us per bit, suitable for a chip that uses its internal
+RC oscillator. 1 us is the normal setting. The ISP remembers the last
+requested speed.)
+
+  NOTE - For the lock bits (and nothing else), you'll need the "-e" argument,
+  which performs a full chip erase. Do that, and set the lock bits, as the
+  _first_ command, then set everything else, then per above set the lock
+  bits again at high speed _without_ "-e" (as no actual change is needed).
+  
+
+
+- To talk to a USB serial port, use:
+
+  cu -l /dev/ttyACM(number) -s (baud)
+
+  (The Nano shows up as /dev/ttyUSB(number) rather than /dev/ttyACM(number).)
+
+- Bootloader based programming can fail due to conflicts with Mint's
+  "modem manager" utility. Either uninstall it or add rules in
+  /etc/udev/rules to override its classification of ATmega32u4 devices
+  or any other devices giving trouble..
+
+- The AVR ISP mk II and other such tools can also fail unless appropriate
+  rules are placed in /etc/udev/rules. See the reference directory for
+  details and a sample ruleset.

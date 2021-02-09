@@ -1,0 +1,17 @@
+G04 start of page 10 for group -4015 idx -4015 *
+G04 Title: (unknown), toppaste *
+G04 Creator: pcb 20140316 *
+G04 CreationDate: Tue 28 Aug 2018 05:55:18 PM GMT UTC *
+G04 For: thomasc *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions (mil): 5000.00 1250.00 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNTOPPASTE*%
+%ADD64R,0.0400X0.0400*%
+%ADD63R,0.0600X0.0600*%
+G54D63*X377500Y100000D02*X380000D01*
+X395000D02*X397500D01*
+G54D64*X387500Y92500D02*Y90000D01*
+M02*

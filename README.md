@@ -21,34 +21,34 @@ License.
 
 The following hardware and software components are provided:
 
-* *Control daemon script.* This listens for commands on a UDP port, starts
+* **Control daemon script.** This listens for commands on a UDP port, starts
 and stops the camera daemon and GPIO daemon, and performs post-processing
 tasks as requested.
 
-* *Web interface script.* This is an old-school CGI script that provides a
+* **Web interface script.** This is an old-school CGI script that provides a
 GUI for configuring, controlling, and monitoring the output of the NeuroCam
 control daemon.
 
-* *Command-line interface program.* This is a command-line script that
+* **Command-line interface program.** This is a command-line script that
 can configure and command the NeuroCam control daemon.
 
-* *"Blink Box" GPIO device.* This is a general-purpose TTL I/O box built
+* **"Blink Box" GPIO device.** This is a general-purpose TTL I/O box built
 using Arduino hardware. The NeuroCam uses it to strobe LEDs for frame
 synchronization and to listen for TTL signals (start/stop strobes and
 annotation signals).
 
-* *GPIO monitoring daemon.* This probes for "Blink Box" GPIO devices, and
+* **GPIO monitoring daemon.** This probes for "Blink Box" GPIO devices, and
 if found, sets up LED strobing and translates GPIO inputs into appropriate
 UDP commands that are sent to the NeuroCam control daemon.
 
 
 The following helper scripts are provided:
 
-* *Install and update scripts.* These are used to create NeuroCam software
+* **Install and update scripts.** These are used to create NeuroCam software
 installation USB sticks, which are then used to make new NeuroCams and to
 update their software.
 
-* *Utility scripts.* At present, this is a pair of scripts for sending UDP
+* **Utility scripts.** At present, this is a pair of scripts for sending UDP
 packets and listening for UDP broadcasts. These are used for low-level
 communication with the NeuroCam daemon for debugging purposes.
 
@@ -99,7 +99,7 @@ MacOS filesystems don't like it either. The default Linux filesystems
 
 The workaround is to store NeuroCam folders as `.tar` archives when saving
 them on external drives, and to process the frame data on Linux machines or
-other machines with suitable filesystems set up.
+on other machines with suitable filesystems configured.
 
 * The NeuroCam performs random access to an absurdly large number of files
 during capture and post-processing.
@@ -114,15 +114,17 @@ crawl (and probably capture, too).
 
 This repository contains the following directories:
 
-* code -- NeuroCam daemon and GUI scripts.
-* install-scripts -- Scripts for building install/update USB sticks.
-* manuals -- NeuroCam documentation.
-* manuals-src -- Source for rebuilding NeuroCam documentation.
-* gpio-code -- Source for the "Blink Box" GPIO device's firmware.
-* gpio-pcb -- PCB development files for the "Blink Box" GPIO device.
-* drawings - Mechanical drawings (for the GPIO device).
-* schematics - Schematics (for the GPIO device and lamp driver).
-* notes -- Miscellaneous notes relevant to NeuroCam development.
+* `code` -- NeuroCam daemon and GUI scripts.
+* `install-scripts` -- Scripts for building install/update USB sticks.
+* `manuals` -- NeuroCam documentation.
+* `manuals-src` -- Source for rebuilding NeuroCam documentation.
+* `gpio-code` -- Source for the "Blink Box" GPIO device's firmware.
+* `gpio-pcb` -- PCB development files for the "Blink Box" GPIO device.
+* `gpio-headers` -- Pin assignments for the "Blink Box" GPIO device's
+internal headers.
+* `drawings` - Mechanical drawings (for the GPIO device).
+* `schematics` - Schematics (for the GPIO device and lamp driver).
+* `notes` -- Miscellaneous notes relevant to NeuroCam development.
 
 
 _This is the end of the file._
