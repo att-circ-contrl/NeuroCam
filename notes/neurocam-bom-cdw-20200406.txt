@@ -1,0 +1,22 @@
+Part			mfg p/n		cdw p/n		price
+
+machine (no RAM)	NUC7i7DNKE	5008529		659.99
+https://www.cdw.com/product/intel-next-unit-of-computing-kit-nuc7i7dnke-mini-pc-core-i7-8650u-1.9-g/5008529
+
+RAM (1x8 gigs)		KCP426SS8/8	5109912		43.99
+https://www.cdw.com/product/kingston-ddr4-8-gb-so-dimm-260-pin-unbuffered/5109912
+
+SSD (1 TB)		MZ-N6E1T0BW	4934196		183.99
+https://www.cdw.com/product/samsung-860-evo-mz-n6e1t0bw-solid-state-drive-1-tb-sata-6gb-s/4934196
+
+Router			RT-N66R		4493141		99.99
+https://www.cdw.com/product/asus-rt-n66r-wireless-router-802.11a-b-g-n-desktop/4493141
+
+USB hub (usb 3)		ST4300MINU3B	3069185		25.99
+https://www.cdw.com/product/startech.com-portable-4-port-superspeed-mini-usb-3.0-hub-black/3069185
+
+Network cable (3')	N001-003-BL	324473		2.99
+https://www.cdw.com/product/tripp-lite-3ft-cat5e-cat5-350mhz-blue-snagless-molded-patch-cable-rj45-m-m/324473
+
+
+Total:							1016.94

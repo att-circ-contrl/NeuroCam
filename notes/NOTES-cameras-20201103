@@ -1,0 +1,20 @@
+- Original NeuroCam cameras (used with kiosks) were Logitech c920 cameras.
+- Replacement NeuroCam kiosk cameras were Logitech c930 cameras (much better
+  low-light performance).
+
+
+- Enclosure cameras were similar to the following:
+
+http://www.webcamerausb.com/elp-camera-night-vision-2mega-pixels-1920x1080p-30fps-ov2710-cmos-hd-usb-webcam-led-for-video-door-phone-p-318.html
+(Lots of vendors sell similar cameras; ours were from Amazon.)
+
+The lens mount on the enclosure cameras is "M12 3.6mm" (thread and focal
+length, respectively). We can swap in wide-angle/fisheye lenses if we can't
+find cameras with them already attached.
+
+The two original enclosure cameras had 90 and 110 degree FOVs if I remember
+correctly.
+
+Tape over the light sensor and IR LEDs. Taping over the light sensor makes it
+stay in IR mode, and taping over the LEDs prevents the IR LEDs from confusing
+the eye-tracker.
