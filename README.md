@@ -30,12 +30,13 @@ your machine and type "`make installkey`".
 * To rebuild the manuals (which should already be in the "`manuals`" folder),
 type "`make manual`".
 
-* To build the firmware for the "Blink Box" GPIO device, make sure
-the "NeurAVR" project is installed and "`neuravr`" is symlinked at an
-appropriate location, and type "`make blinkbox-hex`".
+* To flash a "Blink Box" GPIO device using the firmware hex file, plug the
+device into your computer and type "`make blinkbox-burn`".
 
-* To flash a "Blink Box" GPIO device after the firmware hex file is built,
-plug the device into your computer and type "`make blinkbox-burn`".
+* To rebuild the firmware for the "Blink Box" GPIO device, make sure
+the "NeurAVR" project is installed and "`neuravr`" is symlinked at an
+appropriate location (in the "`gpio/code`" folder or in the folder the
+"`NeuroCam`" project is installed in), and type "`make blinkbox-hex`".
 
 
 ## Relevant Components
