@@ -1,0 +1,10 @@
+Machine (no RAM):  NUC6i7KYK  CDW p/n: 4085713   (545.99 USD)
+RAM:  Kingston DDR4 2x4gig  CDW p/n: 4039935   (114.99 USD)
+SSD:  (1 TB) Samsung MZ-N5E1T0BW  CDW p/n: 4150865   (418.99 USD)
+(3x) Camera:  Logitech C920  CDW p/n: 2588857   (72.99 USD)
+USB hub:  StarTech 4-port  CDW p/n: 3069185   (25.99 USD)
+Router:  Asus N16  CDW p/n: 1953395  (93.99 USD)
+[alternate: Asus RT-N66R  CDW p/n:  4493141  (93.99 USD)]
+Patch cable:  Tripp Lite 3' Cat5e  CDW p/n: 324473  (2.99 USD)
+
+Unit cost:  1422 USD (approx)
