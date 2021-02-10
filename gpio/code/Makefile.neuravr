@@ -46,7 +46,7 @@ helpscreen:
 	@echo ""
 
 elf: $(BIN).elf
-hex: $(BIN).hex
+hex: $(BIN).hex hexcopy
 asm: $(BIN).asm
 
 clean:
@@ -56,6 +56,10 @@ clean:
 
 $(BIN).hex: $(BIN).elf
 	avr-objcopy -j .text -j .data -O ihex $(BIN).elf $(BIN).hex
+
+hexcopy: $(BIN).hex
+	rm -f hexfiles/$(BIN).hex
+	cp $(BIN).hex hexfiles/
 
 $(BIN).elf: $(SRCS) $(HDRS)
 	avr-gcc $(CFLAGS) -o $(BIN).elf $(SRCS) $(LFLAGS)

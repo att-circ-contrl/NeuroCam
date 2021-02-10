@@ -19,11 +19,13 @@ manual:
 	make -C manuals-src clean all
 	mv manuals-src/*pdf manuals
 
+# This rebuilds the hex file, copies it, then cleans up again.
 blinkbox-hex:
 	make -C gpio/code -f Makefile.neuravr clean hex
+	make -C gpio/code -f Makefile.neuravr clean
 
 blinkbox-burn:
-	make -C gpio/code -f Makefile.neuravr burnard
+	make -C hexfiles gpio-burnard
 
 #
 # This is the end of the file.
