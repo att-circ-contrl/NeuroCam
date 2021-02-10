@@ -139,14 +139,16 @@ crawl (and probably capture, too).
 This repository contains the following directories:
 
 * `code` -- NeuroCam daemon and GUI scripts.
+* `drawings` - Mechanical drawings (for the GPIO device).
+* `gpio` -- Firmware source and PCB development files for the "Blink Box"
+GPIO device.
+* `hexfiles` -- Firmware binaries for the "Blink Box" GPIO device.
 * `install-scripts` -- Scripts for building install/update USB sticks.
 * `manuals` -- NeuroCam documentation.
 * `manuals-src` -- Source for rebuilding NeuroCam documentation.
-* `gpio` -- Firmware source and PCB development files for the "Blink Box"
-GPIO device.
-* `drawings` - Mechanical drawings (for the GPIO device).
-* `schematics` - Schematics (for the GPIO device and lamp driver).
 * `notes` -- Miscellaneous notes relevant to NeuroCam development.
+* `schematics` - Schematics (for the GPIO device and lamp driver).
+* `utils` -- Miscellaneous utility scripts for debugging the NeuroCam.
 
 
 _This is the end of the file._
