@@ -112,6 +112,7 @@ sub NCAM_GetExposureStops
     foreach $thislabel (keys %NCAM_exposure_stops)
     {
       # FIXME - Not checking for quantization or clamping.
+      # NCAM_SetExposure forces that for us.
       $$stops_p{$thislabel} =
         int(0.5 + $default * $NCAM_exposure_stops{$thislabel});
     }
@@ -195,6 +196,39 @@ sub NCAM_SetExposureByStop
     $exposure = $$meta_p{exposure}{currentval};
     $$camera_p{exp} =
       NCAM_ConvertExposureToStop($exposure, $$camera_p{explist});
+  }
+}
+
+
+
+# High-level camera initialization function.
+# This checks for vendor-specific initialization configuration and applies
+# it if present.
+# Arg 0 points to the camera's configuration hash (including device metadata).
+# No return value.
+
+sub NCAM_InitCameraConfig
+{
+  my ($config_p);
+  my ($devmeta_p, $vendor_p);
+
+  $config_p = $_[0];
+  if (defined $config_p)
+  {
+    $devmeta_p = $$config_p{meta};
+    if (defined $devmeta_p)
+    {
+      $vendor_p = $$devmeta_p{vendorhints};
+      if (defined $vendor_p)
+      {
+        # If we have auxiliary control values specified, set them.
+        if (defined $$vendor_p{auxcontrols})
+        {
+          NCAM_SetCameraParamsRaw( $$devmeta_p{device},
+            $$vendor_p{auxcontrols} );
+        }
+      }
+    }
   }
 }
 

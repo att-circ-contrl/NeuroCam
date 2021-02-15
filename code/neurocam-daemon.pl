@@ -972,6 +972,7 @@ sub StartCameraThread
         # We're the child. Set exposure, then transfer control to mplayer.
         NCAM_SetProcessName('ncam-dae-camera');
 
+        NCAM_InitCameraConfig($config_p);
         NCAM_SetExposureByStop($config_p, $$config_p{exp});
 
         # Parse the requested geometry.
@@ -983,6 +984,24 @@ sub StartCameraThread
           $height = $2;
         }
 
+        # FIXME - We need to set this in-flight as well.
+        # Fork a child process to do it after one second.
+        if (0 == fork())
+        {
+          # We're the child.
+
+          # Wait until the camera is running.
+          sleep(1);
+
+          # Initialize configuration.
+          NCAM_InitCameraConfig($config_p);
+          NCAM_SetExposureByStop($config_p, $$config_p{exp});
+
+          # End the child thread.
+          exit(0);
+        }
+
+        # We're the parent thread. Start the camera.
         # Give arguments as a list.
         # This avoids a shell invocation, and gives us the right PID.
         exec('mplayer', 'tv://', '-tv',

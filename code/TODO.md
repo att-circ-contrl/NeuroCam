@@ -5,6 +5,17 @@ Written by Christopher Thomas.
 
 ## Bugs and feature requests:
 
+* Sometimes the video feed is a broken link (perhaps due to using an old
+folder name, due to starting a new feed too quickly?).
+
+* Make "NCAM_QueryCameraParamsRaw" and use it in libcam.pl.
+
+* Modify GrabFrame and TestCapture to set camera state while running.
+
+* Make a "RunCamera" function (with UDP update and fixed frame count options).
+
+* Make a "ConfigureCamera" function to call before and after RunCamera.
+
 * Give the NeuroCam a proper task queue.
 
 * Make a headless processing client for the NeuroCam so that post-processing
@@ -72,8 +83,21 @@ writing various daemons in C (capturing and compositing, at minimum).
 
 * Make the NeuroCam work with ethernet cameras (in addition to USB cameras).
 
+* Make UDP commands to set and query camera configuration.
+
+* Modify the web GUI to allow setting camera configuration while cameras are
+running.
+
+* Modify the web GUI to allow setting additional camera parameters besides
+exposure.
+
 
 ## Abbreviated changelog (most recent changes first):
+
+* 15 Feb 2021 --
+Added vendor-specific metadata. Modified daemon capture code to set camera
+configuration while the camera is running (as the c930 resets itself when
+starting). Adjusted c930 default gain.
 
 * 11 July 2018 --
 _Metadata for deleted folders only goes away after "recalc sizes"._

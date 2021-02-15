@@ -1,5 +1,17 @@
+* From 10 Oct. 2020:
+
 Per a web forum post, the c930 only accepts the following exposure values:
 
 3, 4, 9, 19, 38, 77, 156, 312, 624, 1250, 2074
 
 Anything else holds for one frame and then resets.
+
+
+* From 12 Feb 2021:
+
+- Changing exposure in-flight works, to any value. The camera maps them to
+the fixed values (reporting the set value but acting like the fixed one).
+
+- Setting "gain", "contrast", and "brightness" also works (independently).
+
+- Changes have to be made while the camera is running, apparently.

@@ -129,6 +129,44 @@ sub NCAM_LookUpVendorDevID
 
 
 
+# Returns vendor-specific metadata for a given camera.
+# Arg 0 is the camera model string.
+# Arg 1 is the raw list of controls.
+# Returns a pointer to a hash containing vendor-hint metadata.
+
+sub NCAM_GetVendorHints
+{
+  my ($camera_model, $rawcontrols, $hints_p);
+
+  $camera_model = $_[0];
+  $rawcontrols = $_[1];
+  $hints_p = {};
+
+  # "expstops" lists valid exposure values.
+  # "auxcontrols" lists other controls that can be set, with preferred values.
+
+  if ( (defined $camera_model) && (defined $rawcontrols) )
+  {
+    # Logitech c930e.
+    if ($camera_model =~ m/C930e/i)
+    {
+# FIXME - Seems to not be needed?
+#      $$hints_p{expstops} =
+#        [ 3, 4, 9, 19, 38, 77, 156, 312, 624, 1250, 2074 ];
+
+      $$hints_p{auxcontrols} =
+        { 'brightness' => 128, 'contrast' => 128, 'saturation' => 128,
+          # Default is 0. At night at home, 64 is dark, 128 is decent.
+          # Don't turn down contrast; that quantizes/washes out the image.
+          'gain' => 128 };
+    }
+  }
+
+  return $hints_p;
+}
+
+
+
 # Fetches metadata for one specific camera device.
 # FIXME - This may be Logitech-specific! Test with other cameras.
 # Arg 0 is the camera device name (/dev/videoX).
@@ -259,6 +297,14 @@ sub NCAM_GetCameraMetadata
     }
 
 
+    # Get the list of available controls.
+
+    $cmd = 'v4l2-ctl --device=' . $devname . ' --list-ctrls-menus';
+    $result = `$cmd`;
+
+    $$meta_p{rawcontrols} = $result;
+
+
     # Check for exposure control info.
     # Likewise for focus control info.
     # NOTE - These are not guaranteed to be present, especially focus!
@@ -266,8 +312,7 @@ sub NCAM_GetCameraMetadata
     $$meta_p{exposure} = {};
     $$meta_p{focus} = { 'haveauto' => 0, 'havemanual' => 0 };
 
-    $cmd = 'v4l2-ctl --device=' . $devname . ' --list-ctrls-menus';
-    $result = `$cmd`;
+    $result = $$meta_p{rawcontrols};
 
     while ($result =~ m/(\S.*?)$(.*)/ms)
     {
@@ -320,9 +365,80 @@ sub NCAM_GetCameraMetadata
         $$meta_p{focus}{haveauto} = 1;
       }
     }
+
+
+    # Store vendor-specific camera metadata.
+
+    $$meta_p{vendorhints} =
+      NCAM_GetVendorHints( $$meta_p{model}, $$meta_p{rawcontrols} );
   }
 
   return $meta_p;
+}
+
+
+
+# Maps an input value to the closest entry in a list of "allowed" values.
+# Arg 0 is the desired value.
+# Arg 1 points to an array of "allowed" values.
+# Returns a value from the "allowed" list that's close to the desired value.
+
+sub NCAM_PickClosestValue
+{
+  my ($val_desired, $allowed_p, $val_returned);
+  my ($testval, $thiserr, $besterr);
+
+  $val_desired = $_[0];
+  $allowed_p = $_[1];
+  $val_returned = undef;
+
+  if ( (defined $val_desired) && (defined $allowed_p) )
+  {
+    $besterr = undef;
+    foreach $testval (@$allowed_p)
+    {
+      $thiserr = $testval - $val_desired;
+      $thiserr *= $thiserr;
+
+      if ( (!(defined $besterr)) || ($thiserr < $besterr) )
+      {
+        $besterr = $thiserr;
+        $val_returned = $testval;
+      }
+    }
+  }
+
+  return $val_returned;
+}
+
+
+
+# Sets several camera configuration parameters.
+# Arg 0 is the name of the camera device.
+# Arg 1 points to a hash of key/value pairs to set.
+# No return value.
+
+sub NCAM_SetCameraParamsRaw
+{
+  my($devname, $params_p);
+  my ($thiskey, $thisval);
+  my ($cmd, $result);
+
+  $devname = $_[0];
+  $params_p = $_[1];
+
+  if ( (defined $devname) && (defined $params_p) )
+  {
+    # Do this in arbitrary but repeatable order (lexical order).
+    foreach $thiskey (sort keys %$params_p)
+    {
+      $thisval = $$params_p{$thiskey};
+
+      $cmd = 'v4l2-ctl --device=' . $devname
+        . ' --set-ctrl ' . $thiskey . '=' . $thisval;
+      $result = `$cmd`;
+    }
+  }
 }
 
 
@@ -359,19 +475,25 @@ sub NCAM_SetExposure
     $stepdiff %= $$meta_p{exposure}{step};
     $exp_desired -= $stepdiff;
 
+    # Special-case various specific cameras, if necessary.
+    if (defined $$meta_p{vendorhints}{expstops})
+    {
+      $exp_desired = NCAM_PickClosestValue( $exp_desired,
+        $$meta_p{vendorhints}{expstops} );
+    }
+
 # FIXME - Diagnostics.
 #print "-- Asked for exposure $exp_desired;";
 
     # Issue the request.
     # NOTE - Do this in two steps, just in case it needs it. Focus did.
-    $cmd = 'v4l2-ctl --device=' . $$meta_p{device}
-      . ' --set-ctrl exposure_auto=' . $$meta_p{exposure}{manual};
-    $result = `$cmd`;
-    $cmd = 'v4l2-ctl --device=' . $$meta_p{device}
-      . ' --set-ctrl exposure_absolute=' . $exp_desired;
-    $result = `$cmd`;
+    NCAM_SetCameraParamsRaw( $$meta_p{device},
+      { 'exposure_auto' => $$meta_p{exposure}{manual} } );
+    NCAM_SetCameraParamsRaw( $$meta_p{device},
+      { 'exposure_absolute' => $exp_desired } );
 
     # See what exposure we actually ended up with.
+    # FIXME - This should be done using a "query these params" function.
     $cmd = 'v4l2-ctl --device=' . $$meta_p{device} . ' --list-ctrls';
     $result = `$cmd`;
 
@@ -461,19 +583,14 @@ sub NCAM_SetFocus
 
     if ('auto' eq $focus_desired)
     {
-      $cmd = 'v4l2-ctl --device=' . $$meta_p{device}
-        . ' --set-ctrl focus_auto=1';
-      $result = `$cmd`;
+      NCAM_SetCameraParamsRaw( $$meta_p{device}, { 'focus_auto' => 1 } );
     }
     elsif ($focus_desired =~ m/\d+/)
     {
       # We have to do this in two steps.
-      $cmd = 'v4l2-ctl --device=' . $$meta_p{device}
-        . ' --set-ctrl focus_auto=0';
-      $result = `$cmd`;
-      $cmd = 'v4l2-ctl --device=' . $$meta_p{device}
-        . ' --set-ctrl focus_absolute=' . $focus_desired;
-      $result = `$cmd`;
+      NCAM_SetCameraParamsRaw( $$meta_p{device}, { 'focus_auto' => 0 } );
+      NCAM_SetCameraParamsRaw( $$meta_p{device},
+        { 'focus_absolute' => $focus_desired } );
     }
     else
     {
@@ -483,6 +600,7 @@ sub NCAM_SetFocus
 
 
     # See what we actually ended up with.
+    # FIXME - This should be done using a "query these params" function.
     $cmd = 'v4l2-ctl --device=' . $$meta_p{device} . ' --list-ctrls';
     $result = `$cmd`;
 
@@ -771,6 +889,8 @@ sub NCAM_GetExposureGivenFormat
 
 # Grabs a single frame from a camera.
 # NOTE - This takes considerably longer than one frame period (not real-time).
+# FIXME - Camera settings for the c930 have to be set in-flight, and aren't
+# being set here!
 # Arg 0 points to the camera's metadata hash.
 # Arg 1 is the desired resolution.
 # Arg 2 is the filename to write to.
