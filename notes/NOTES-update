@@ -1,0 +1,20 @@
+Quick-start notes for updating a NeuroCam:
+
+- Be on the same network as the NeuroCam (like you would for using it).
+- Shell into it with:  "ssh neurocam-admin@192.168.1.nnn"
+- Give the "neurocam-admin" account password.
+- Become root with:  "su"
+- Give the root account password.
+- Insert the USB stick, and mount it with:  "mount -t auto /dev/sdb1 /usb"
+(All of the NeuroCams in our lab will have that device and mountpoint.)
+- Run the NeuroCam update script with:
+  "/usb/neurocam-install/scripts/do-update.sh"
+- Reboot the NeuroCam with:  "shutdown -r now"
+  (Alternatively shut it down with:  "shutdown -P now")
+
+
+...If the NeuroCam is internet-connected (and firewalled), you can
+optionally update the OS with:
+  "/usb/neurocam-install/scripts/do-mintupdate.sh"
+This will take a long time, and you'll have to press "enter" a few times
+when it asks questions.
