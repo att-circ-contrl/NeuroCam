@@ -75,6 +75,14 @@ but some cameras (like the "ELP" ones from 2019) need specific combinations.
 If the wrong combination is chosen, the camera vanishes from the device list.
 Have the script sanity-check requested combinations against detected modes.
 
+* Some cameras (like the Nexigo N980P) don't have exposure control. Make the
+NeuroCam script tolerate missing controls.
+
+* Make the NeuroCam save a list of available controls and check against the
+list when updating camera settings.
+
+* Make the NeuroCam adjust gain rather than exposure by default.
+
 
 ## Low priority bugs and feature requests:
 

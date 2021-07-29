@@ -1,0 +1,34 @@
+As of 2021 July 29, the NeuroCam code uses the following commands:
+
+
+Transcoding commands:
+  avplay -r (framerate) -f image2 -i ./(srcdir)/%08d.jpg
+    -an -b (bitrate) -vcodec (vcodec) -pix_fmt yuv420p (outfile)
+
+
+Video capture commands:
+
+  (from a camera to files, with UDP notifications of new frames)
+  mplayer tv://
+    -tv device=(dev):width=(width):height=(height):outfmt=mjpg:fps(rate)
+    -vo jpeg:outdir=(path)
+    -udp-master -udp-ip 127.0.0.1 udp-port (port) --really-quiet -nosound
+
+  (from an MJPEG stream to files, with UDP notifications of new frames)
+  mplayer -demuxer lavf (url) -fps 30 -vo jpeg:outdir=(path)
+    -udp-master -udp-ip 127.0.0.1 udp-port (port) --really-quiet -nosound
+
+  Adding "-frames (count)" or "-frames 1" for test captures.
+  Optionally saving in "/tmp/vtemp" for test captures.
+
+
+Camera interrogation commands:
+  v4l2-ctl --device=(dev) --info
+  v4l2-ctl --device=(dev) --list-framesizes=MJPG
+  v4l2-ctl --device=(dev)
+    --list-frameintervals=width=(width),height=(height),pixelformat=MJPG
+  v4l2-ctl --device=(dev) --list-ctrls
+  v4l2-ctl --device=(dev) --list-ctrls-menus
+
+Camera configuration commands:
+  v4l2-ctl --device=(dev) --set-ctrl (key)=(value)
