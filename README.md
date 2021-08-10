@@ -8,9 +8,11 @@ real-time. Frame alignment is performed in post-processing, and video footage
 is saved frame-by-frame to allow later analysis without motion-compression
 artifacts.
 
-**This was written in a hurry and not re-factored.** There's a lot of room
-for improvement, and most of that will eventually happen, but refactoring
-NeuroCam is not presently the lab's top priority.
+**While this code is functional, there is a lot of room for improvement.**
+This is documented in more detail in the "Idiosyncracies" section of this
+document and in the "TODO" documentation in the code folder. Most of these
+improvements will eventually happen, but refactoring NeuroCam is not
+presently the lab's top priority.
 
 The NeuroCam project is copyright (c) by Vanderbilt University, and is
 released under the Creative Commons Attribution-ShareAlike 4.0 International
@@ -77,8 +79,8 @@ communication with the NeuroCam daemon for debugging purposes.
 
 ## Idiosyncracies
 
-The following idiosyncracies are present (due to the "written in a hurry and
-not re-factored" aspect mentioned in the previous section):
+The following idiosyncracies are present (per "there is a lot of room for
+improvement" in the overview section):
 
 * Frame-grabbing has low jitter once it's been started but the individual
 streams have time skew of up to 0.25 seconds relative to each other. This
