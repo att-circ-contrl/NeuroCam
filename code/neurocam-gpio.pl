@@ -22,6 +22,9 @@ use POSIX;
 use Socket;
 use IPC::Open2;
 
+# Path fix needed for more recent Perl versions.
+use lib ".";
+
 require "neurocam-libmt.pl";
 require "neurocam-libnetwork.pl";
 

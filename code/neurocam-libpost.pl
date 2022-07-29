@@ -96,6 +96,31 @@ $fake_greyscale = 1;
 my ($ffmpeg_cmd);
 $ffmpeg_cmd = 'avconv';
 
+# Video encoding flags.
+
+# FIXME - Mint 18's ffmpeg doesn't like "libx264" or "libopenh264".
+# Codec list says "mpeg2video" and "mpeg4" are ok.
+# FIXME - Check this again with Mint 18's "avconv" fork!
+
+# NOTE - Bit rate 200k looks awful, 1M looks decent but is only 2.5x
+# compressed vs jpegs. 600k is ok for single streams but not composite.
+# Going with 1M. Compression ratio is better than 2.5x for most streams.
+
+# NOTE - 2021 videos are 1080p at 15 fps; 1M looks awful. JPEG rate is
+# 2.5 MByte/sec (25 Mbit). 10 Mbit should be sufficient.
+
+my ($vidsuffix, $vidcodec, $vidbitrate);
+
+$vidsuffix = '.mp4';
+$vidcodec = 'mpeg4';
+$vidbitrate = '10M';
+
+#$vidbitrate = '1000k';
+#$vidcodec = 'libx264';
+
+#$vidsuffix = '.mpeg';
+#$vidcodec = 'mpeg2video';
+
 
 # Debugging tattle switches.
 
@@ -1796,7 +1821,7 @@ sub NCAM_TranscodeFrameset
   my ($repodir, $slotname, $obase, $port);
   my ($sockhandle, $netinfo_p, $hostip);
   my ($framecount);
-  my ($outfname, $vcodec, $bitrate);
+  my ($outfname);
   my ($cmd, $result);
   my ($symlinks_p);
   my ($framerate);
@@ -1866,26 +1891,8 @@ sub NCAM_TranscodeFrameset
 
     # Set up for the conversion.
 
-    # FIXME - My ffmpeg doesn't like "libx264" or "libopenh264".
-    # Codec list says "mpeg2video" and "mpeg4" are ok.
-    # FIXME - Check this again with Mint's "avconv" fork!
-    # NOTE: Bit rate 200k looks awful, 1M looks decent but is only 2.5x
-    # compressed vs jpegs. 600k is ok for single streams but not composite.
-    # Going with 1M. Compression ratio is better than 2.5x for most streams.
-if (1)
-{
-    $outfname = $obase . '.mp4';
-#      $vcodec = 'libx264';
-    $vcodec = 'mpeg4';
-#    $bitrate = '600k';
-    $bitrate = '1000k';
-}
-else
-{
-    $outfname = $obase . '.mpeg';
-    $vcodec = 'mpeg2video';
-    $bitrate = '1000k';
-}
+    $outfname = $obase . $vidsuffix;
+    # NOTE - $vidcodec and $vidbitrate have been moved to "constants".
 
     # Remove the target file if present.
     $cmd = 'rm -f ' . $outfname;
@@ -1907,8 +1914,8 @@ else
       $ffmpeg_cmd
       . ' -r ' . $framerate . ' -f image2 '
       . '-i ./' . $srcdir . '/%08d.jpg '
-      . '-an -b ' . $bitrate . ' '
-      . '-vcodec ' . $vcodec . ' -pix_fmt yuv420p '
+      . '-an -b ' . $vidbitrate . ' '
+      . '-vcodec ' . $vidcodec . ' -pix_fmt yuv420p '
       . $outfname;
 
     # FIXME - Diagnostics.

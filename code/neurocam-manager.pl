@@ -19,6 +19,9 @@ use Image::Magick;
 use Cwd;
 use Proc::Daemon;
 
+# Path fix needed for more recent Perl versions.
+use lib ".";
+
 require "neurocam-libmt.pl";
 require "neurocam-libcam.pl";
 require "neurocam-libnetwork.pl";

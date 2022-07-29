@@ -30,7 +30,7 @@ $NCAM_cgi_usb_repository_base = 'ncam-repositories';
 # User-readable release version for the NeuroCam software.
 # FIXME - This should be somewhere more central than here.
 our ($NCAM_cgi_version);
-$NCAM_cgi_version = 'v.2021-02-15';
+$NCAM_cgi_version = 'v.2021-09-14';
 
 # Configuration switch indicating whether we're doing a move or a copy.
 our ($NCAM_cgi_do_move_delete);

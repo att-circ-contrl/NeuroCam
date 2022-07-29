@@ -14,6 +14,9 @@ use Time::HiRes;
 use POSIX;
 use Socket;
 
+# Path fix needed for more recent Perl versions.
+use lib ".";
+
 require "neurocam-libmt.pl";
 require "neurocam-libnetwork.pl";
 require "neurocam-libmjpeg.pl";

@@ -5,6 +5,8 @@ Written by Christopher Thomas.
 
 ## Bugs and feature requests:
 
+* "avconv" doesn't exist on Mint 20. Auto-detect "avconv" vs "ffmpeg".
+
 * Sometimes the video feed is a broken link (perhaps due to using an old
 folder name, due to starting a new feed too quickly?).
 
@@ -101,6 +103,13 @@ exposure.
 
 
 ## Abbreviated changelog (most recent changes first):
+
+* 16 Sept 2021 --
+Explicitly added "." to the library search path (no longer there by default).
+
+* 14 Sept 2021 --
+Changed video transcoding bit rate to 10 Mbit (from 1 Mbit). 1080p was
+looking terrible at the old rate.
 
 * 15 Feb 2021 --
 Added vendor-specific metadata. Modified daemon capture code to set camera
