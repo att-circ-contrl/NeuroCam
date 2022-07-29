@@ -1,0 +1,20 @@
+Video alignment configuration is stored in a structure with the following
+fields; missing fields will be filled with default values:
+
+"avgeventinterval" is the desired approximate interval between brightness
+  change events within a grid tile. This is used to tune detection. Default
+  is 1 second.
+
+"blacklist" is a cell array with labels of streams to ignore when processing.
+  Default is { 'Monitor', 'Composited' }.
+
+"maxframes" is the maximum number of frames per stream to process. Default
+  is Inf. This can be set lower to run fast tests of the alignment code.
+
+"quiet" is true to suppress console output. Default is false.
+
+"tilegrid" [ width height ] is the number of grid tiles to divide each image
+  frame into. Default is [ 1 1 ] (no subdivision).
+
+
+This is the end of the file.

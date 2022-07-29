@@ -1,0 +1,14 @@
+Frame metadata for a repository is stored in the following format:
+
+
+- The top-level variable is a structure indexed by video stream label
+  containing per-stream configuration variables.
+
+- Per-stream configuration variables are structures with the following fields:
+
+  "indices" is a vector storing frame numbers for recorded frames.
+  "times" is a vector storing frame timestamps (in seconds).
+  "fnames" is a cell array containing frame image filenames, including paths.
+
+
+This is the end of the file.

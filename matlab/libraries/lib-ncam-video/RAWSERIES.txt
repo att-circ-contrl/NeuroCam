@@ -1,0 +1,18 @@
+Raw video intensity series are stored in the following format:
+
+
+- The top-level variable is a structure with one field per video stream,
+  indexed by video stream label, containing per-stream series variables.
+
+- Per-stream series variables are structures with one field per component,
+  containing per-component series variables. Typical components are
+  'red', 'grn', and 'blu' for RGB images and 'mag' for greyscale, but the
+  storage format does not constrain the component names that might exist.
+
+- Per-component series variables are 3-dimensional arrays indexed by
+  [h,v,fnum]. The "h" and "v" indices indicate the tile that is being
+  processed. Frame numbers are indices used to look up frames in the frame
+  metadata structure (per FRAMEMETA.txt).
+
+
+This is the end of the file.
