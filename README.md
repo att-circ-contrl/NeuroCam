@@ -148,6 +148,7 @@ GPIO device.
 * `install-scripts` -- Scripts for building install/update USB sticks.
 * `manuals` -- NeuroCam documentation.
 * `manuals-src` -- Source for rebuilding NeuroCam documentation.
+* `matlab` -- Matlab libraries for working with NeuroCam systems and data.
 * `notes` -- Miscellaneous notes relevant to NeuroCam development.
 * `schematics` - Schematics (for the GPIO device and lamp driver).
 * `utils` -- Miscellaneous utility scripts for debugging the NeuroCam.
