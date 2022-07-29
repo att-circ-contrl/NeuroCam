@@ -1,0 +1,15 @@
+This is an interim partial version of the alignment script that makes
+histograms of difference data but doesn't do anything else with it.
+
+As far as I can tell by eye, the best way to proceed is to look for the most
+variable sqrt(n) tiles in any given stream and average those, rather than
+looking at the full-frame average.
+
+It may also be a good idea to get a correlation matrix between tiles and
+group tile sets that are most correlated, within a stream. This would catch
+the case where two areas of the image are highly variable but are behaving
+very differently.
+
+Alternatively we could just select the top sqrt(n) tiles individually without
+averaging them, and use each of them as alignment candidates against other
+streams' tiles.
