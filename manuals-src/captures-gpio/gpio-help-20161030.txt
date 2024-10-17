@@ -1,0 +1,17 @@
+Commands:
+ ?, HLP  :  Help screen.
+    IDQ  :  Device identity query.
+    QRY  :  Query system state.
+    INI  :  Reinitialize (clock and event reset, pins to default config).
+  ECH 1/0:  Start/stop echoing typed characters back to the host.
+    WRO n:  Set the output bank to data value n.
+    WRU n:  Set the user-configurable bank outputs to data value n.
+    RDI  :  Read the state of the input bank.
+    RDO  :  Read the state of the output bank.
+    RDU  :  Read the state of the user-configurable bank.
+  REP 1/0:  Start/stop automatically reporting changes in I/O lines.
+  PPU 1/0:  Enable/disable input pin pull-up resistors.
+  TSK 1/0:  Start/stop the device's preconfigured task.
+    TPP n:  (task) Set pulse period to n ticks.
+    TPD n:  (task) Set pulse duration to n ticks.
+    DDC  :  (debug) Dump MCU configuration register contents.

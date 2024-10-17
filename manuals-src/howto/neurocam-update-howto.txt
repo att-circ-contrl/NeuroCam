@@ -1,0 +1,23 @@
+This summarizes how to update the NeuroCam software. The full description is
+in the NeuroCam manual, which is on TEBA in "Procedures and SOPs/Neurocam".
+As of September 2021, the update method is on page 22.
+
+Short version:
+
+* Log into the NeuroCam, as the "root" account. There are two ways to do this:
+  - The first is to plug a keyboard and monitor into the NeuroCam, press
+    ctrl-alt-F6 to get a text console, and then log in as "root" with the
+    password in the manual.
+  - The second is to use a tablet or other machine that has a wireless
+    connection to the NeuroCam. Use SSH to log in as the "neurocam-admin"
+    user ("ssh neurocam-admin@192.168.1.xxx"), with the normal NeuroCam
+    password, then type "su" to become root (it'll ask you for the root
+    password at that point).
+* Once you're logged in as root, plug the NeuroCam update stick into the
+  NeuroCam, wait a slow count of 10, then type
+  "~/neurocam-scripts/do-update.sh".
+* When it's finished, type "shutdown -r now" to reboot, and remove the USB
+  stick when it boots.
+
+You can check that the NeuroCam has been updated by logging into the web
+interface and looking for the version number.

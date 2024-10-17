@@ -1,0 +1,17 @@
+System state (all values in base 10 unless noted):
+  Device type:  GPIOv1    Subtype/Configuration:  neurocam
+  Preconfigured task:  light strobe
+  Firmware version:  20161030
+  Debugging commands:  enabled
+  Timestamp:  9344 ticks
+  Clock ticks per second:  1000
+  Digital I/Os (Input/Output/User-config):  8 / 1 / 0
+  Input pull-up resistors?  yes
+     Input state (hex):  ff
+    Output state (hex):  00
+      User state (hex):  00
+  Task-specific state:
+    Enabled?  no
+    Synch light period (ticks):  5000
+    Synch light duration (ticks):  20
+End of system state.
