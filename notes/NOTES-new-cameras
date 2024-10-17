@@ -1,0 +1,15 @@
+To get relevant configuration information for new camera models, plug them
+into the NeuroCam, shell in (using the instructions in the NeuroCam manual),
+run the following commands, and save the outputs:
+
+v4l2-ctl --device=/dev/video0 --info
+v4l2-ctl --device=/dev/video0 --list-framesizes=MJPG
+v4l2-ctl --device=/dev/video0 --list-ctrls
+v4l2-ctl --device=/dev/video0 --list-ctrls-menus
+
+These are the commands that the NeuroCam scripts run internally to get
+information about how to use the cameras.
+
+NOTE - "/dev/video0" is the first detected video camera. To guarantee this
+device number, unplug other cameras and wait a few seconds before plugging
+in the new camera.
