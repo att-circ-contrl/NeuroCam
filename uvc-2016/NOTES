@@ -1,0 +1,13 @@
+NOTE - Some cameras are well-behaved; these can be used with the unmodified
+driver. Driver modification is needed for cameras that try to eat all of the
+USB bandwidth.
+
+Rebuilding works fine using the "active" symlink, but "clean" doesn't.
+Enter the directory manually (without the symlink) and invoke the clean script.
+
+For Mint 17, we're using "3.16.38-modded".
+This was ostensibly the "trusty" version (3.13), but an upgrade occurred
+that broke driver compatibility.
+
+FIXME - We're on Mint 18 now. Need to get and modify the UVC driver for this
+kernel version.

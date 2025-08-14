@@ -1,0 +1,106 @@
+Only in uvc-src-3.16.38-modded: do-allbuild.sh
+Only in uvc-src-3.16.38-modded: do-clean.sh
+Only in uvc-src-3.16.38-modded: do-install.sh
+Only in uvc-src-3.16.38-modded: do-multires.sh
+Only in uvc-src-3.16.38-modded: do-rebuild.sh
+Only in uvc-src-3.16.38-modded: do-revert.sh
+Only in uvc-src-3.16.38-modded: do-stresstest.sh
+Only in uvc-src-3.16.38-modded: do-test.sh
+diff -r uvc-src-3.16.38/uvc_video.c uvc-src-3.16.38-modded/uvc_video.c
+28a29,50
+> 
+> /* FIXME - Compressed bandwidth fix for multiple cameras. (Chris) */
+> /* Set this flag 1 to enable changes, 0 to back out. */
+> #define CJT_FIX_BANDWIDTH 1
+> /* Compressed video has a specified bpp of 0 bits. */
+> /* We declare an equivalent fiat bpp. 2 bpp is safe; 4 is overkill. */
+> #define CJT_COMPRESSED_BPP 4
+> 
+> /* SwDevAlien's implementation used a compression factor instead; I don't
+> know what bbp he assumed. He used a "compression factor of 10", so he was
+> likely assuming at least 16 bpp and maybe 32. */
+> 
+> /* FIXME - The size _minimum_ of 1024 is odd; allow disabling it. */
+> /* It looks like an artifact from before fast mode was a thing. */
+> /* It's also above the maximum isochronous packet size; are we always
+> in block mode? */
+> #define CJT_ENFORCE_MIN_PACKET_SIZE 0
+> 
+> /* FIXME - Instrumentation to see what cameras actually ask for and get. */
+> #define CJT_TATTLE_CAM_REQS 1
+> 
+> 
+121a144,177
+> /* NOTE - Tattle what our nominal requested stats are. */
+> #if CJT_TATTLE_CAM_REQS
+> {
+>   u32 width, height, bpp;
+>   u32 compressed;
+>   u32 interval_ctrl, interval_frame, xfer_size, speed;
+> 
+>   width = frame->wWidth;
+>   height = frame->wHeight;
+>   bpp = format->bpp;
+> 
+>   compressed = 0;
+>   if (format->flags & UVC_FMT_FLAG_COMPRESSED)
+>     compressed = 1;
+> 
+>   interval_ctrl = ctrl->dwFrameInterval;
+>   interval_frame = frame->dwFrameInterval[0];
+> 
+>   xfer_size = ctrl->dwMaxPayloadTransferSize;
+>   speed = stream->dev->udev->speed;
+> 
+>   /* printk code for "u32" is "%u". */
+>   printk(KERN_NOTICE
+>     "UVC fixup request %u x %u x %u bpp, compressed? %u,"
+>     " interval %u (c) (%u (f)), xfer size %u, bus speed %u\n",
+>     width, height, bpp, compressed,
+>     interval_ctrl, interval_frame, xfer_size, speed);
+> }
+> #endif
+> 
+> /* NOTE - Force this to be on and to work with compression. (Chris) */
+> #if CJT_FIX_BANDWIDTH
+> 	if (
+> #else
+123a180
+> #endif
+126a184
+> 		u32 effective_bpp;
+138c196,202
+< 		bandwidth = frame->wWidth * frame->wHeight / 8 * format->bpp;
+---
+> 		effective_bpp = format->bpp;
+> #if CJT_FIX_BANDWIDTH
+> 		if ( (0 == effective_bpp) ||
+> 		    (format->flags & UVC_FMT_FLAG_COMPRESSED) )
+> 			effective_bpp = CJT_COMPRESSED_BPP;
+> #endif
+> 		bandwidth = frame->wWidth * frame->wHeight / 8 * effective_bpp;
+144a209,210
+> /* NOTE - Tattling routinely shows smaller packets. Allow disabling. (Chris) */
+> #if CJT_ENFORCE_MIN_PACKET_SIZE
+152a219
+> #endif
+154c221,223
+< 		ctrl->dwMaxPayloadTransferSize = bandwidth;
+---
+> 		/* NOTE - If it asks for less, leave it alone. (Chris) */
+> 		if (bandwidth < ctrl->dwMaxPayloadTransferSize)
+> 			ctrl->dwMaxPayloadTransferSize = bandwidth;
+155a225,237
+> 
+> /* NOTE - Tattle what our revised transfer size is. */
+> #if CJT_TATTLE_CAM_REQS
+> {
+>   u32 xfer_size;
+> 
+>   xfer_size = ctrl->dwMaxPayloadTransferSize;
+> 
+>   /* printk code for "u32" is "%u". */
+>   printk(KERN_NOTICE "UVC revised transfer size %u\n", xfer_size);
+> }
+> #endif
+> 
